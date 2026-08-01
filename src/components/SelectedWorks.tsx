@@ -11,7 +11,7 @@ export default function SelectedWorks() {
         {/* Left Side: Text Content */}
         <div className="lg:col-span-6 p-8 sm:p-12 lg:p-16 flex flex-col justify-center z-10 space-y-6">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-syne font-bold tracking-tight text-white leading-[1.05]">
-            Selected <br /> Works
+            SELECTED <br /> WORKS
           </h2>
 
           <div className="space-y-4 text-base-content/80 text-base sm:text-lg font-light leading-relaxed max-w-lg">

@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-syne font-bold mb-6">Layanan</h4>
+          <h4 className="font-syne font-bold mb-6">Services</h4>
           <ul className="space-y-3 text-sm text-base-content/70">
             <li>
               <a href="#" className="hover:text-primary transition-colors">
@@ -76,16 +76,15 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-syne font-bold mb-6">Hubungi Kami</h4>
+          <h4 className="font-syne font-bold mb-6">Contact Us</h4>
           <p className="text-sm text-base-content/70 mb-4">
-            Siap untuk memulai projek visual Anda? Mari diskusikan ide Anda
-            bersama kami.
+            Ready to start your visual project? Let&apos;s discuss your ideas with us.
           </p>
           <a
             href="mailto:hello@tosart.studio"
-            className="btn bg-primary rounded-full w-full sm:w-auto"
+            className="btn bg-primary rounded-full w-full sm:w-auto text-white"
           >
-            Mulai Diskusi
+            Get In Touch
           </a>
         </div>
       </div>
