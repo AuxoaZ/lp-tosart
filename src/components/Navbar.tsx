@@ -28,13 +28,13 @@ export default function Navbar() {
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box w-52"
             >
               <li>
-                <Link href="#jasa-kami">Jasa Kami</Link>
+                <Link href="#jasa-kami">Services</Link>
               </li>
               <li>
-                <Link href="#who-we-are">Tentang Kami</Link>
+                <Link href="#who-we-are">About Us</Link>
               </li>
               <li>
-                <Link href="#proses-kreatif">Proses Kreatif</Link>
+                <Link href="#proses-kreatif">Process</Link>
               </li>
             </ul>
           </div>
@@ -60,7 +60,7 @@ export default function Navbar() {
                 href="#jasa-kami"
                 className="hover:text-primary transition-colors rounded-full"
               >
-                Jasa Kami
+                Services
               </Link>
             </li>
             <li>
@@ -68,7 +68,7 @@ export default function Navbar() {
                 href="#who-we-are"
                 className="hover:text-primary transition-colors rounded-full"
               >
-                Tentang Kami
+                About Us
               </Link>
             </li>
             <li>
@@ -76,7 +76,7 @@ export default function Navbar() {
                 href="#proses-kreatif"
                 className="hover:text-primary transition-colors rounded-full"
               >
-                Proses Kreatif
+                Process
               </Link>
             </li>
           </ul>
@@ -86,7 +86,7 @@ export default function Navbar() {
             href="#contact"
             className="btn btn-outline btn-sm rounded-full text-white hover:bg-white hover:text-black border-white/30"
           >
-            Hubungi Kami
+            Contact Us
           </a>
         </div>
       </nav>
