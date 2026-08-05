@@ -92,7 +92,7 @@ export default function ProductGallery({
 
   if (isSubpage) {
     return (
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none animate-fade-in-up">
         {/* Title */}
         <h2 className="text-3xl md:text-5xl font-syne font-bold tracking-tight text-white mb-8 pl-1">
           {title}
@@ -199,7 +199,7 @@ export default function ProductGallery({
   }
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto select-none animate-fade-in-up">
       {/* Title */}
       <h2 className="text-3xl md:text-5xl font-syne font-bold tracking-tight text-white mb-8 pl-1">
         {title}

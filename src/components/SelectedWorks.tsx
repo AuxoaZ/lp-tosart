@@ -4,7 +4,7 @@ export default function SelectedWorks() {
   return (
     <section
       id="selected-works"
-      className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+      className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-fade-in-up"
     >
       {/* Single Card Container */}
       <div className="relative rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden bg-base-300/40 backdrop-blur-2xl border border-white/10 shadow-2xl grid grid-cols-1 lg:grid-cols-12 min-h-[460px]">

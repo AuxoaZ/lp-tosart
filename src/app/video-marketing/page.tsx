@@ -10,7 +10,7 @@ export default function VideoMarketingPage() {
   return (
     <div className="pt-32 pb-24">
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 animate-fade-in-up">
         {/* Breadcrumb / Back button */}
         <Link 
           href="/" 
@@ -31,7 +31,7 @@ export default function VideoMarketingPage() {
       </div>
 
       {/* Video Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up animation-delay-200">
         <div className="w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-base-300/40 backdrop-blur-md relative">
           <iframe
             src="https://www.youtube.com/embed/g2zP3ajD6o4?autoplay=0"

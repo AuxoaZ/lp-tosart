@@ -1,6 +1,6 @@
 export default function WhoWeAre() {
   return (
-    <section id="who-we-are" className="py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    <section id="who-we-are" className="py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto animate-fade-in-up">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         {/* Left Side: Title & Accent */}
         <div className="relative">

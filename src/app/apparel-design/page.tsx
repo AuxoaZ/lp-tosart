@@ -26,7 +26,7 @@ export default function ApparelDesignPage() {
   return (
     <div className="pt-32 pb-16">
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 animate-fade-in-up">
         {/* Breadcrumb / Back button */}
         <Link 
           href="/" 

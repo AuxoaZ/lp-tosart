@@ -57,7 +57,7 @@ export default function ServicesSlider() {
   return (
     <section
       id="jasa-kami"
-      className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+      className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-fade-in-up"
     >
       {/* Header */}
       <div className="text-center mb-16">

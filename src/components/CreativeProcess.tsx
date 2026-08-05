@@ -23,7 +23,7 @@ export default function CreativeProcess() {
   ];
 
   return (
-    <section id="proses-kreatif" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="proses-kreatif" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-fade-in-up">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-syne font-bold uppercase mb-4">Our Creative Process</h2>
         <p className="text-base-content/70 max-w-2xl mx-auto">
