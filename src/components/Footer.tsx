@@ -48,9 +48,9 @@ export default function Footer() {
           <h4 className="font-syne font-bold mb-6">Services</h4>
           <ul className="space-y-3 text-sm text-base-content/70">
             <li>
-              <a href="#" className="hover:text-primary transition-colors">
+              <Link href="/apparel-design" className="hover:text-primary transition-colors">
                 Apparel Design
-              </a>
+              </Link>
             </li>
             <li>
               <a href="#" className="hover:text-primary transition-colors">
@@ -63,14 +63,14 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-primary transition-colors">
+              <Link href="/social-media-design" className="hover:text-primary transition-colors">
                 Social Media Design
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-primary transition-colors">
-                Video Editing
-              </a>
+              <Link href="/video-marketing" className="hover:text-primary transition-colors">
+                Video Marketing
+              </Link>
             </li>
           </ul>
         </div>

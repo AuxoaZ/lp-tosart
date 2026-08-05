@@ -28,13 +28,13 @@ export default function Navbar() {
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box w-52"
             >
               <li>
-                <Link href="#jasa-kami">Services</Link>
+                <Link href="/apparel-design">Apparel Design</Link>
               </li>
               <li>
-                <Link href="#who-we-are">About Us</Link>
+                <Link href="/social-media-design">Social Media Design</Link>
               </li>
               <li>
-                <Link href="#proses-kreatif">Process</Link>
+                <Link href="/video-marketing">Video Marketing</Link>
               </li>
             </ul>
           </div>
@@ -57,26 +57,26 @@ export default function Navbar() {
           <ul className="menu menu-horizontal px-1 font-medium text-sm gap-2">
             <li>
               <Link
-                href="#jasa-kami"
+                href="/apparel-design"
                 className="hover:text-primary transition-colors rounded-full"
               >
-                Services
+                Apparel Design
               </Link>
             </li>
             <li>
               <Link
-                href="#who-we-are"
+                href="/social-media-design"
                 className="hover:text-primary transition-colors rounded-full"
               >
-                About Us
+                Social Media Design
               </Link>
             </li>
             <li>
               <Link
-                href="#proses-kreatif"
+                href="/video-marketing"
                 className="hover:text-primary transition-colors rounded-full"
               >
-                Process
+                Video Marketing
               </Link>
             </li>
           </ul>
