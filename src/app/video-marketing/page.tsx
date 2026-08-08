@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import VideoMarketingClient from "./VideoMarketingClient";
 
 export const metadata = {
   title: "Video Marketing | Tosart Studio",
@@ -30,18 +31,8 @@ export default function VideoMarketingPage() {
         </div>
       </div>
 
-      {/* Video Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up animation-delay-200">
-        <div className="w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-base-300/40 backdrop-blur-md relative">
-          <iframe
-            src="https://www.youtube.com/embed/g2zP3ajD6o4?autoplay=0"
-            title="Video Marketing Showcase"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="absolute inset-0 w-full h-full border-0"
-          />
-        </div>
-      </div>
+      {/* Video Slider & Tab Content */}
+      <VideoMarketingClient />
     </div>
   );
 }

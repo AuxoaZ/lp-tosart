@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { FiChevronLeft, FiChevronRight, FiArrowRight } from "react-icons/fi";
 
 const services = [
@@ -10,6 +11,23 @@ const services = [
       "T-shirt, hoodie, jersey, and custom apparel design with strong visual direction and production-ready output.",
     image: "/img/service-1.png",
     color: "from-blue-600 to-indigo-900",
+    path: "/apparel-design?tab=apparel",
+  },
+  {
+    title: "Social Media Design",
+    description:
+      "Creative content and visual systems tailored for digital branding and audience engagement.",
+    image: "/img/social/feed-5.png",
+    color: "from-blue-600 to-indigo-900",
+    path: "/social-media-design",
+  },
+  {
+    title: "Video Marketing",
+    description:
+      "Visual editing, motion graphics, and video production to tell your brand story dynamically.",
+    image: "/img/service-5.png",
+    color: "from-blue-600 to-indigo-900",
+    path: "/video-marketing",
   },
   {
     title: "Custom & Accessories",
@@ -17,6 +35,7 @@ const services = [
       "Creative support for hats, bags, patches, tags, zipper pulls, packaging, and other supporting merchandise.",
     image: "/img/service-2.jpeg",
     color: "from-blue-600 to-indigo-900",
+    path: "/apparel-design?tab=accessories",
   },
   {
     title: "Logo & Branding",
@@ -24,20 +43,7 @@ const services = [
       "Brand identity design that builds a recognizable and consistent visual presence.",
     image: "/img/service-3.png",
     color: "from-blue-600 to-indigo-900",
-  },
-  {
-    title: "Social Media Design",
-    description:
-      "Creative content and visual systems tailored for digital branding and audience engagement.",
-    image: "/img/service-4.png",
-    color: "from-blue-600 to-indigo-900",
-  },
-  {
-    title: "Video Editing",
-    description:
-      "Visual editing, motion graphics, and video production to tell your brand story dynamically.",
-    image: "/img/service-5.png",
-    color: "from-blue-600 to-indigo-900",
+    path: "/apparel-design?tab=logo-brand",
   },
 ];
 
@@ -105,14 +111,14 @@ export default function ServicesSlider() {
         </div>
 
         {/* Left Side: Visual Card */}
-        <div className="w-full lg:w-1/2 aspect-square max-w-[600px] relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 z-10">
+        <div className="w-full lg:w-1/2 aspect-[4/5] max-w-[500px] relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 z-10">
           <div
             className={`absolute inset-0 bg-gradient-to-br ${currentService.color} opacity-40 mix-blend-overlay z-10 transition-colors duration-500`}
           ></div>
           <img
             src={currentService.image}
             alt={currentService.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
           />
           {/* Overlay Text on Image */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20 flex flex-col justify-end p-8">
@@ -132,14 +138,17 @@ export default function ServicesSlider() {
         <div className="w-full lg:w-2/5 lg:-ml-16 z-20">
           <div className="bg-base-300/50 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
             <h4 className="text-xl md:text-2xl font-syne font-bold mb-4">
-              {currentService.title} | Creative Studio
+              {currentService.title}
             </h4>
             <p className="text-base-content/80 mb-8 leading-relaxed">
               {currentService.description}
             </p>
-            <button className="btn bg-primary rounded-full w-full sm:w-auto gap-2">
+            <Link
+              href={currentService.path}
+              className="btn bg-primary rounded-full w-full sm:w-auto gap-2 text-white"
+            >
               View Service Details <FiArrowRight />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

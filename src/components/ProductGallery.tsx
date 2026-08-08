@@ -9,14 +9,22 @@ interface ProductGalleryProps {
   images: string[];
   isSubpage?: boolean;
   layout?: "grid" | "masonry";
+  cols?: 3 | 4 | 5 | 6;
 }
 
 export default function ProductGallery({
   title,
   images,
-  isSubpage = false,
+  isSubpage = true,
   layout = "grid",
+  cols = 6,
 }: ProductGalleryProps) {
+  const gridColsClass = {
+    3: "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3",
+    4: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4",
+    5: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5",
+    6: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6",
+  }[cols];
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeModalIndex, setActiveModalIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -99,7 +107,7 @@ export default function ProductGallery({
         </h2>
 
         {/* Single Unified Container with transparent blur background */}
-        <div className="bg-base-300/20 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:p-10 lg:p-12 shadow-2xl">
+        <div className="bg-base-300/50 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:p-10 lg:p-12 shadow-2xl">
           {layout === "masonry" ? (
             <div className="columns-2 md:columns-3 gap-6 lg:gap-8">
               {images.map((src, idx) => (
@@ -117,7 +125,7 @@ export default function ProductGallery({
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
+            <div className={`grid ${gridColsClass} gap-6 sm:gap-8 items-center justify-items-center`}>
               {images.map((src, idx) => (
                 <div
                   key={idx}
