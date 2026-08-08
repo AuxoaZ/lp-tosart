@@ -62,7 +62,7 @@ export default function ServicesSlider() {
 
   return (
     <section
-      id="jasa-kami"
+      id="service"
       className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-fade-in-up"
     >
       {/* Header */}

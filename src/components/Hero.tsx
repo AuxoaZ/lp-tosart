@@ -20,29 +20,28 @@ export default function Hero() {
         <span className="text-base-content font-medium">storytelling</span>.
       </p>
 
-      {/* Action & Stats Container */}
-      <div className="flex flex-col sm:flex-row items-center gap-8 mb-12 animate-fade-in-up animation-delay-300">
+      {/* Action Button */}
+      <div className="mb-12 animate-fade-in-up animation-delay-300">
         <a
-          href="#contact"
+          href="#service"
           className="btn bg-primary btn-lg rounded-full px-8 shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:shadow-[0_0_30px_rgba(var(--primary),0.5)] transition-shadow"
         >
-          Mulai Projek
+          View Service
         </a>
+      </div>
 
-        <div className="h-10 w-px bg-base-content/20 hidden sm:block"></div>
-
-        <div className="flex gap-6 text-left">
-          <div>
-            <div className="text-2xl font-bold font-syne">5+</div>
-            <div className="text-xs uppercase tracking-widest text-base-content/60">
-              Years Experience
-            </div>
+      {/* Stats Container (below button, centered) */}
+      <div className="flex gap-8 sm:gap-16 text-center justify-center animate-fade-in-up animation-delay-400">
+        <div>
+          <div className="text-3xl font-bold font-syne text-white">5+</div>
+          <div className="text-xs uppercase tracking-widest text-base-content/60 mt-1">
+            Years Experience
           </div>
-          <div>
-            <div className="text-2xl font-bold font-syne">400+</div>
-            <div className="text-xs uppercase tracking-widest text-base-content/60">
-              Brands Handled
-            </div>
+        </div>
+        <div>
+          <div className="text-3xl font-bold font-syne text-white">400+</div>
+          <div className="text-xs uppercase tracking-widest text-base-content/60 mt-1">
+            Brands Handled
           </div>
         </div>
       </div>
