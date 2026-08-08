@@ -9,7 +9,7 @@ const services = [
     title: "Apparel Design",
     description:
       "T-shirt, hoodie, jersey, and custom apparel design with strong visual direction and production-ready output.",
-    image: "/img/service-1.png",
+    image: "/img/apparel-service.png",
     color: "from-blue-600 to-indigo-900",
     path: "/apparel-design?tab=apparel",
   },
