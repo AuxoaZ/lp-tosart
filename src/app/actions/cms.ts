@@ -10,7 +10,7 @@ const OWNER = process.env.GITHUB_OWNER;
 const REPO = process.env.GITHUB_REPO;
 const BRANCH = process.env.GITHUB_BRANCH || "main";
 const TOKEN = process.env.GITHUB_TOKEN;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "tosartadmin";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const LOCAL_DB_PATH = path.join(process.cwd(), "src/data/db.json");
 const UPLOADS_DIR = path.join(process.cwd(), "public/uploads");
@@ -62,8 +62,9 @@ const isGithubConfigured = () => {
 
 // Helper: Fetch file from GitHub API (handles public and private repos)
 async function fetchFromGithub(filePath: string) {
-  if (!isGithubConfigured()) throw new Error("GitHub credentials not configured.");
-  
+  if (!isGithubConfigured())
+    throw new Error("GitHub credentials not configured.");
+
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}?ref=${BRANCH}`;
   const response = await fetch(url, {
     method: "GET",
@@ -91,8 +92,14 @@ async function fetchFromGithub(filePath: string) {
 }
 
 // Helper: Push file to GitHub API
-async function pushToGithub(filePath: string, contentStr: string, sha?: string, commitMessage = "Update via CMS") {
-  if (!isGithubConfigured()) throw new Error("GitHub credentials not configured.");
+async function pushToGithub(
+  filePath: string,
+  contentStr: string,
+  sha?: string,
+  commitMessage = "Update via CMS",
+) {
+  if (!isGithubConfigured())
+    throw new Error("GitHub credentials not configured.");
 
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`;
   const base64Content = Buffer.from(contentStr).toString("base64");
@@ -116,7 +123,9 @@ async function pushToGithub(filePath: string, contentStr: string, sha?: string, 
 
   if (!response.ok) {
     const errorDetails = await response.text();
-    throw new Error(`Failed to write to GitHub: ${response.statusText}. Details: ${errorDetails}`);
+    throw new Error(
+      `Failed to write to GitHub: ${response.statusText}. Details: ${errorDetails}`,
+    );
   }
 
   return await response.json();
@@ -124,7 +133,8 @@ async function pushToGithub(filePath: string, contentStr: string, sha?: string, 
 
 // Helper: Delete file from GitHub API
 async function deleteFromGithub(filePath: string, sha: string) {
-  if (!isGithubConfigured()) throw new Error("GitHub credentials not configured.");
+  if (!isGithubConfigured())
+    throw new Error("GitHub credentials not configured.");
 
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`;
   const response = await fetch(url, {
@@ -206,7 +216,10 @@ export async function getGalleryData(): Promise<GalleryData> {
         return gitData.parsed as GalleryData;
       }
     } catch (error) {
-      console.error("Error fetching from GitHub, falling back to local:", error);
+      console.error(
+        "Error fetching from GitHub, falling back to local:",
+        error,
+      );
     }
   }
 
@@ -230,53 +243,60 @@ export async function getGalleryData(): Promise<GalleryData> {
         hero: {
           badge: "Apparel Design, Branding & Visual Studio",
           title: "Beyond\nVisuals",
-          subtitle: "Designing visuals that connect culture, identity, and storytelling.",
+          subtitle:
+            "Designing visuals that connect culture, identity, and storytelling.",
           words: ["culture", "identity", "storytelling"],
           stats: [
             { value: "5+", label: "Years Experience" },
-            { value: "400+", label: "Brands Handled" }
-          ]
+            { value: "400+", label: "Brands Handled" },
+          ],
         },
         whoWeAre: {
           title: "Who We Are",
           paragraphs: [
             "Tosart is a creative studio specializing in apparel design, branding, and visual content production. We help brands transform ideas into visuals that feel distinctive, relevant, and production-ready.",
             "With years of experience working across various industries and creative directions, we focus on creating designs that are not only visually strong, but also aligned with brand identity and audience culture.",
-            "From apparel graphics to digital visuals, every project is approached with attention to detail, concept development, and strong visual storytelling."
-          ]
+            "From apparel graphics to digital visuals, every project is approached with attention to detail, concept development, and strong visual storytelling.",
+          ],
         },
         services: {
           title: "Our Services",
-          subtitle: "Comprehensive creative solutions to elevate your brand and apparel line",
+          subtitle:
+            "Comprehensive creative solutions to elevate your brand and apparel line",
           items: [
             {
               title: "Apparel Design",
-              description: "T-shirt, hoodie, jersey, and custom apparel design with strong visual direction and production-ready output."
+              description:
+                "T-shirt, hoodie, jersey, and custom apparel design with strong visual direction and production-ready output.",
             },
             {
               title: "Social Media Design",
-              description: "Creative content and visual systems tailored for digital branding and audience engagement."
+              description:
+                "Creative content and visual systems tailored for digital branding and audience engagement.",
             },
             {
               title: "Video Marketing",
-              description: "Visual editing, motion graphics, and video production to tell your brand story dynamically."
+              description:
+                "Visual editing, motion graphics, and video production to tell your brand story dynamically.",
             },
             {
               title: "Custom & Accessories",
-              description: "Creative support for hats, bags, patches, tags, zipper pulls, packaging, and other supporting merchandise."
+              description:
+                "Creative support for hats, bags, patches, tags, zipper pulls, packaging, and other supporting merchandise.",
             },
             {
               title: "Logo & Branding",
-              description: "Brand identity design that builds a recognizable and consistent visual presence."
-            }
-          ]
-        }
+              description:
+                "Brand identity design that builds a recognizable and consistent visual presence.",
+            },
+          ],
+        },
       },
       media: {
         whatsapp: "6285904430581",
         instagram: "tosart.std",
-        email: "hello@tosart.studio"
-      }
+        email: "hello@tosart.studio",
+      },
     };
   }
 }
@@ -286,7 +306,7 @@ export async function updateGalleryData(
   category: keyof GalleryData,
   newImagesList: string[],
   homeApparel?: string[],
-  homeAccessories?: string[]
+  homeAccessories?: string[],
 ) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) throw new Error("Unauthorized");
@@ -309,8 +329,13 @@ export async function updateGalleryData(
       if (homeApparel) currentDb.homeApparelImages = homeApparel;
       if (homeAccessories) currentDb.homeAccessoriesImages = homeAccessories;
 
-      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), sha, `Update category ${category} via CMS`);
-      
+      await pushToGithub(
+        "src/data/db.json",
+        JSON.stringify(currentDb, null, 2),
+        sha,
+        `Update category ${category} via CMS`,
+      );
+
       // Revalidate paths to clear Next.js caches
       revalidatePath("/");
       revalidatePath("/apparel-design");
@@ -331,8 +356,12 @@ export async function updateGalleryData(
     if (homeApparel) currentDb.homeApparelImages = homeApparel;
     if (homeAccessories) currentDb.homeAccessoriesImages = homeAccessories;
 
-    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
-    
+    await fs.writeFile(
+      LOCAL_DB_PATH,
+      JSON.stringify(currentDb, null, 2),
+      "utf-8",
+    );
+
     revalidatePath("/");
     revalidatePath("/apparel-design");
     revalidatePath("/social-media-design");
@@ -344,7 +373,11 @@ export async function updateGalleryData(
 }
 
 // Upload Image (Max 2MB validation)
-export async function uploadImageAction(category: keyof GalleryData, fileName: string, fileBase64: string) {
+export async function uploadImageAction(
+  category: keyof GalleryData,
+  fileName: string,
+  fileBase64: string,
+) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) throw new Error("Unauthorized");
 
@@ -362,7 +395,12 @@ export async function uploadImageAction(category: keyof GalleryData, fileName: s
     try {
       // 1. Upload file to GitHub repo
       const existingSha = await getFileSha(fileRepoPath);
-      await pushToGithub(fileRepoPath, Buffer.from(fileBase64, "base64").toString("binary"), existingSha || undefined, `Upload image ${fileName} via CMS`);
+      await pushToGithub(
+        fileRepoPath,
+        Buffer.from(fileBase64, "base64").toString("binary"),
+        existingSha || undefined,
+        `Upload image ${fileName} via CMS`,
+      );
 
       // 2. Add to db.json
       const gitData = await fetchFromGithub("src/data/db.json");
@@ -373,7 +411,12 @@ export async function uploadImageAction(category: keyof GalleryData, fileName: s
         currentDb[category].push(relativePublicPath);
       }
 
-      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), dbSha, `Add uploaded image path to ${category}`);
+      await pushToGithub(
+        "src/data/db.json",
+        JSON.stringify(currentDb, null, 2),
+        dbSha,
+        `Add uploaded image path to ${category}`,
+      );
 
       revalidatePath("/");
       revalidatePath("/apparel-design");
@@ -389,7 +432,7 @@ export async function uploadImageAction(category: keyof GalleryData, fileName: s
   try {
     // Ensure dir exists
     await fs.mkdir(UPLOADS_DIR, { recursive: true });
-    
+
     // Write local file
     const fileBuffer = Buffer.from(fileBase64, "base64");
     await fs.writeFile(path.join(UPLOADS_DIR, fileName), fileBuffer);
@@ -402,7 +445,11 @@ export async function uploadImageAction(category: keyof GalleryData, fileName: s
       currentDb[category].push(relativePublicPath);
     }
 
-    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
+    await fs.writeFile(
+      LOCAL_DB_PATH,
+      JSON.stringify(currentDb, null, 2),
+      "utf-8",
+    );
 
     revalidatePath("/");
     revalidatePath("/apparel-design");
@@ -415,7 +462,10 @@ export async function uploadImageAction(category: keyof GalleryData, fileName: s
 }
 
 // Delete Image
-export async function deleteImageAction(category: keyof GalleryData, imagePath: string) {
+export async function deleteImageAction(
+  category: keyof GalleryData,
+  imagePath: string,
+) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) throw new Error("Unauthorized");
 
@@ -440,11 +490,22 @@ export async function deleteImageAction(category: keyof GalleryData, imagePath: 
       const dbSha = gitData ? gitData.sha : undefined;
 
       // Filter arrays
-      currentDb[category] = currentDb[category].filter((p: string) => p !== imagePath);
-      currentDb.homeApparelImages = currentDb.homeApparelImages.filter((p: string) => p !== imagePath);
-      currentDb.homeAccessoriesImages = currentDb.homeAccessoriesImages.filter((p: string) => p !== imagePath);
+      currentDb[category] = currentDb[category].filter(
+        (p: string) => p !== imagePath,
+      );
+      currentDb.homeApparelImages = currentDb.homeApparelImages.filter(
+        (p: string) => p !== imagePath,
+      );
+      currentDb.homeAccessoriesImages = currentDb.homeAccessoriesImages.filter(
+        (p: string) => p !== imagePath,
+      );
 
-      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), dbSha, `Delete image ${imagePath} from ${category}`);
+      await pushToGithub(
+        "src/data/db.json",
+        JSON.stringify(currentDb, null, 2),
+        dbSha,
+        `Delete image ${imagePath} from ${category}`,
+      );
 
       revalidatePath("/");
       revalidatePath("/apparel-design");
@@ -464,7 +525,9 @@ export async function deleteImageAction(category: keyof GalleryData, imagePath: 
       try {
         await fs.unlink(localFilePath);
       } catch (e) {
-        console.warn(`File local tidak ditemukan untuk dihapus: ${localFilePath}`);
+        console.warn(
+          `File local tidak ditemukan untuk dihapus: ${localFilePath}`,
+        );
       }
     }
 
@@ -472,11 +535,21 @@ export async function deleteImageAction(category: keyof GalleryData, imagePath: 
     const fileContent = await fs.readFile(LOCAL_DB_PATH, "utf-8");
     const currentDb = JSON.parse(fileContent);
 
-    currentDb[category] = currentDb[category].filter((p: string) => p !== imagePath);
-    currentDb.homeApparelImages = currentDb.homeApparelImages.filter((p: string) => p !== imagePath);
-    currentDb.homeAccessoriesImages = currentDb.homeAccessoriesImages.filter((p: string) => p !== imagePath);
+    currentDb[category] = currentDb[category].filter(
+      (p: string) => p !== imagePath,
+    );
+    currentDb.homeApparelImages = currentDb.homeApparelImages.filter(
+      (p: string) => p !== imagePath,
+    );
+    currentDb.homeAccessoriesImages = currentDb.homeAccessoriesImages.filter(
+      (p: string) => p !== imagePath,
+    );
 
-    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
+    await fs.writeFile(
+      LOCAL_DB_PATH,
+      JSON.stringify(currentDb, null, 2),
+      "utf-8",
+    );
 
     revalidatePath("/");
     revalidatePath("/apparel-design");
@@ -501,8 +574,13 @@ export async function updateVideosAction(newVideosList: any[]) {
 
       currentDb.videos = newVideosList;
 
-      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), sha, "Update videos list via CMS");
-      
+      await pushToGithub(
+        "src/data/db.json",
+        JSON.stringify(currentDb, null, 2),
+        sha,
+        "Update videos list via CMS",
+      );
+
       revalidatePath("/video-marketing");
       return { success: true };
     } catch (error: any) {
@@ -518,8 +596,12 @@ export async function updateVideosAction(newVideosList: any[]) {
 
     currentDb.videos = newVideosList;
 
-    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
-    
+    await fs.writeFile(
+      LOCAL_DB_PATH,
+      JSON.stringify(currentDb, null, 2),
+      "utf-8",
+    );
+
     revalidatePath("/video-marketing");
     return { success: true };
   } catch (error: any) {
@@ -541,13 +623,20 @@ export async function updateTypewritingAction(newTypewritingData: any) {
 
       currentDb.typewriting = newTypewritingData;
 
-      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), sha, "Update copywriting texts via CMS");
-      
+      await pushToGithub(
+        "src/data/db.json",
+        JSON.stringify(currentDb, null, 2),
+        sha,
+        "Update copywriting texts via CMS",
+      );
+
       revalidatePath("/");
       return { success: true };
     } catch (error: any) {
       console.error("GitHub typewriting update failed:", error);
-      throw new Error(`Gagal memperbarui konten teks di GitHub: ${error.message}`);
+      throw new Error(
+        `Gagal memperbarui konten teks di GitHub: ${error.message}`,
+      );
     }
   }
 
@@ -558,18 +647,28 @@ export async function updateTypewritingAction(newTypewritingData: any) {
 
     currentDb.typewriting = newTypewritingData;
 
-    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
-    
+    await fs.writeFile(
+      LOCAL_DB_PATH,
+      JSON.stringify(currentDb, null, 2),
+      "utf-8",
+    );
+
     revalidatePath("/");
     return { success: true };
   } catch (error: any) {
     console.error("Local typewriting update failed:", error);
-    throw new Error(`Gagal memperbarui konten teks secara lokal: ${error.message}`);
+    throw new Error(
+      `Gagal memperbarui konten teks secara lokal: ${error.message}`,
+    );
   }
 }
 
 // Update Media Contact Settings
-export async function updateMediaAction(newMediaSettings: { whatsapp: string; instagram: string; email: string; }) {
+export async function updateMediaAction(newMediaSettings: {
+  whatsapp: string;
+  instagram: string;
+  email: string;
+}) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) throw new Error("Unauthorized");
 
@@ -581,8 +680,13 @@ export async function updateMediaAction(newMediaSettings: { whatsapp: string; in
 
       currentDb.media = newMediaSettings;
 
-      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), sha, "Update media settings via CMS");
-      
+      await pushToGithub(
+        "src/data/db.json",
+        JSON.stringify(currentDb, null, 2),
+        sha,
+        "Update media settings via CMS",
+      );
+
       revalidatePath("/");
       revalidatePath("/apparel-design");
       revalidatePath("/social-media-design");
@@ -600,8 +704,12 @@ export async function updateMediaAction(newMediaSettings: { whatsapp: string; in
 
     currentDb.media = newMediaSettings;
 
-    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
-    
+    await fs.writeFile(
+      LOCAL_DB_PATH,
+      JSON.stringify(currentDb, null, 2),
+      "utf-8",
+    );
+
     revalidatePath("/");
     revalidatePath("/apparel-design");
     revalidatePath("/social-media-design");
