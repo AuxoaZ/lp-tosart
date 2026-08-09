@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 import VideoMarketingClient from "./VideoMarketingClient";
+import { getGalleryData } from "@/app/actions/cms";
 
 export const metadata = {
   title: "Video Marketing | Tosart Studio",
   description: "Dynamic video marketing assets. Watch our featured showcase displaying creative visual editing, motion graphics, and engaging brand promotions.",
 };
 
-export default function VideoMarketingPage() {
+export default async function VideoMarketingPage() {
+  const data = await getGalleryData();
+  const videos = data.videos || [];
+
   return (
     <div className="pt-32 pb-24">
       {/* Header Section */}
@@ -32,7 +36,7 @@ export default function VideoMarketingPage() {
       </div>
 
       {/* Video Slider & Tab Content */}
-      <VideoMarketingClient />
+      <VideoMarketingClient initialVideos={videos} />
     </div>
   );
 }

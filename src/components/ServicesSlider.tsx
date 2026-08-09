@@ -33,7 +33,7 @@ const services = [
     title: "Custom & Accessories",
     description:
       "Creative support for hats, bags, patches, tags, zipper pulls, packaging, and other supporting merchandise.",
-    image: "/img/service-2.jpeg",
+    image: "/img/service-accessories.png",
     color: "from-blue-600 to-indigo-900",
     path: "/apparel-design?tab=accessories",
   },
@@ -111,23 +111,24 @@ export default function ServicesSlider() {
         </div>
 
         {/* Left Side: Visual Card */}
-        <div className="w-full lg:w-1/2 aspect-[4/5] max-w-[500px] relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 z-10">
-          <div
-            className={`absolute inset-0 bg-gradient-to-br ${currentService.color} opacity-40 mix-blend-overlay z-10 transition-colors duration-500`}
-          ></div>
+        <div className="w-full lg:w-1/2 aspect-4/5 max-w-125 relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 z-10">
+          {/* <div
+            className={`absolute inset-0 bg-linear-to-br ${currentService.color} opacity-40 mix-blend-overlay z-10 transition-colors duration-500`}
+          ></div> */}
           <img
             src={currentService.image}
             alt={currentService.title}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
+            loading="lazy"
           />
           {/* Overlay Text on Image */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20 flex flex-col justify-end p-8">
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-20 flex flex-col justify-end p-8">
             {/* <span className="text-primary font-medium text-sm mb-2">
               {currentService.title} Services
             </span> */}
-            <h3 className="text-3xl md:text-4xl font-syne font-black text-white italic uppercase leading-none">
+            <h3 className="text-2xl md:text-3xl font-syne font-black text-white italic uppercase leading-none">
               {currentService.title.split(" ")[0]} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-white to-white/50">
                 {currentService.title.split(" ").slice(1).join(" ")}
               </span>
             </h3>

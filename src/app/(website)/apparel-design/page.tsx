@@ -1,50 +1,7 @@
 import ApparelDesignClient from "./ApparelDesignClient";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
-
-const apparelImages = [
-  "/img/apparel/509.png",
-  "/img/apparel/509-1.png",
-  "/img/apparel/510.png",
-  "/img/apparel/510-1.png",
-  "/img/apparel/511.png",
-  "/img/apparel/511-1.png",
-  "/img/apparel/520.png",
-  "/img/apparel/520-1.png",
-  "/img/apparel/539.png",
-  "/img/apparel/539-1.png",
-  "/img/apparel/JERSEY.png",
-  "/img/apparel/JERSEY-1.png",
-];
-
-const accessoriesImages = [
-  "/img/accessories/CAP.png",
-  "/img/accessories/CAP-1.png",
-  "/img/accessories/CAP-3.png",
-  "/img/accessories/469.png",
-  "/img/accessories/484.png",
-  "/img/accessories/486.png",
-  "/img/accessories/497.png",
-  "/img/accessories/506.png",
-  "/img/accessories/507.png",
-  "/img/accessories/511.png",
-  "/img/accessories/512.png",
-  "/img/accessories/Artboard.png",
-];
-
-const logoBrandImges = [
-  "/img/logo-brand/logo-brand-8.png",
-  "/img/logo-brand/logo-brand-1.png",
-  "/img/logo-brand/logo-brand-2.png",
-  "/img/logo-brand/logo-brand-10.png",
-  "/img/logo-brand/logo-brand-3.png",
-  "/img/logo-brand/logo-brand-4.png",
-  "/img/logo-brand/logo-brand-5.png",
-  "/img/logo-brand/logo-brand-9.png",
-  "/img/logo-brand/logo-brand-6.png",
-  "/img/logo-brand/logo-brand-7.png",
-  "/img/logo-brand/logo-brand-11.png",
-];
+import { getGalleryData } from "@/app/actions/cms";
 
 export const metadata = {
   title: "Apparel Design | Tosart Studio",
@@ -52,9 +9,16 @@ export const metadata = {
     "Our signature apparel design services. From custom hoodies and jerseys to varsity jackets, we create high-impact graphics and production-ready apparel concepts.",
 };
 
-export default function ApparelDesignPage() {
+export default async function ApparelDesignPage() {
+  const data = await getGalleryData();
+  
+  const apparelImages = data.apparelImages || [];
+  const accessoriesImages = data.accessoriesImages || [];
+  const logoBrandImages = data.logoBrandImages || [];
+  const visualImages = data.visualImages || [];
+
   return (
-    <div className="pt-32 pb-16">
+    <div className="pt-32 pb-0">
       {/* Header Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 animate-fade-in-up">
         {/* Breadcrumb / Back button */}
@@ -82,7 +46,8 @@ export default function ApparelDesignPage() {
       <ApparelDesignClient
         apparelImages={apparelImages}
         accessoriesImages={accessoriesImages}
-        logoBrandImages={logoBrandImges}
+        logoBrandImages={logoBrandImages}
+        visualImages={visualImages}
       />
     </div>
   );

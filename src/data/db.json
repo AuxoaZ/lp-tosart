@@ -1,0 +1,145 @@
+{
+  "apparelImages": [
+    "/img/apparel/509.png",
+    "/img/apparel/509-1.png",
+    "/img/apparel/510.png",
+    "/img/apparel/510-1.png",
+    "/img/apparel/511.png",
+    "/img/apparel/511-1.png",
+    "/img/apparel/520.png",
+    "/img/apparel/520-1.png",
+    "/img/apparel/539.png",
+    "/img/apparel/539-1.png",
+    "/img/apparel/JERSEY.png",
+    "/img/apparel/JERSEY-1.png"
+  ],
+  "accessoriesImages": [
+    "/img/accessories/CAP.png",
+    "/img/accessories/CAP-1.png",
+    "/img/accessories/CAP-3.png",
+    "/img/accessories/469.png",
+    "/img/accessories/484.png",
+    "/img/accessories/486.png",
+    "/img/accessories/497.png",
+    "/img/accessories/506.png",
+    "/img/accessories/507.png",
+    "/img/accessories/511.png",
+    "/img/accessories/512.png",
+    "/img/accessories/Artboard.png"
+  ],
+  "logoBrandImages": [
+    "/img/logo-brand/logo-brand-8.png",
+    "/img/logo-brand/logo-brand-1.png",
+    "/img/logo-brand/logo-brand-2.png",
+    "/img/logo-brand/logo-brand-10.png",
+    "/img/logo-brand/logo-brand-3.png",
+    "/img/logo-brand/logo-brand-4.png",
+    "/img/logo-brand/logo-brand-5.png",
+    "/img/logo-brand/logo-brand-9.png",
+    "/img/logo-brand/logo-brand-6.png",
+    "/img/logo-brand/logo-brand-7.png",
+    "/img/logo-brand/logo-brand-11.png"
+  ],
+  "visualImages": [
+    "/img/visual/visual-15.png",
+    "/img/visual/visual-16.png",
+    "/img/visual/visual-17.png",
+    "/img/visual/visual-18.png",
+    "/img/visual/visual-19.png",
+    "/img/visual/visual-20.png",
+    "/img/visual/visual-21.png",
+    "/img/visual/visual-22.png",
+    "/img/visual/visual-23.png",
+    "/img/visual/visual-24.png",
+    "/img/visual/visual-25.png",
+    "/img/visual/visual-26.png",
+    "/img/visual/visual-27.png",
+    "/img/visual/visual-28.png",
+    "/img/visual/visual-29.png"
+  ],
+  "socialImages": [
+    "/img/social/feed-1.png",
+    "/img/social/Artboard 1.png",
+    "/img/social/Artboard 2.png",
+    "/img/social/Artboard 3.png",
+    "/img/social/Artboard 4 (1).png",
+    "/img/social/Artboard 4 (2).png",
+    "/img/social/feed-2.png",
+    "/img/social/Artboard 5 (2).png",
+    "/img/social/Artboard 7.png",
+    "/img/social/Artboard 7 (1).png",
+    "/img/social/Artboard 10.png",
+    "/img/social/feed-3.png",
+    "/img/social/feed-4.png",
+    "/img/social/Artboard11.png",
+    "/img/social/Artboard222.png",
+    "/img/social/Artboard223.png",
+    "/img/social/feed-5.png"
+  ],
+  "homeApparelImages": [
+    "/img/apparel/509.png",
+    "/img/apparel/509-1.png",
+    "/img/apparel/510.png",
+    "/img/apparel/510-1.png",
+    "/img/apparel/511.png",
+    "/img/apparel/511-1.png",
+    "/img/apparel/520.png",
+    "/img/apparel/520-1.png",
+    "/img/apparel/539.png",
+    "/img/apparel/539-1.png",
+    "/img/apparel/JERSEY.png",
+    "/img/apparel/JERSEY-1.png"
+  ],
+  "homeAccessoriesImages": [
+    "/img/accessories/CAP.png",
+    "/img/accessories/CAP-1.png",
+    "/img/accessories/CAP-3.png",
+    "/img/accessories/469.png",
+    "/img/accessories/484.png",
+    "/img/accessories/486.png",
+    "/img/accessories/497.png",
+    "/img/accessories/506.png",
+    "/img/accessories/507.png",
+    "/img/accessories/511.png",
+    "/img/accessories/512.png",
+    "/img/accessories/Artboard.png"
+  ],
+  "videos": [
+    {
+      "id": "v1",
+      "title": "AI Product Commercial Showcase",
+      "embedUrl": "https://www.youtube.com/embed/g2zP3ajD6o4?autoplay=0",
+      "category": "ai-marketing"
+    },
+    {
+      "id": "v2",
+      "title": "Future of Branding - AI Concept",
+      "embedUrl": "https://www.youtube.com/embed/1K3L4X4xO30?autoplay=0",
+      "category": "ai-marketing"
+    },
+    {
+      "id": "v3",
+      "title": "Creative Motion Graphics Reel",
+      "embedUrl": "https://www.youtube.com/embed/wzXQW2yVlhM?autoplay=0",
+      "category": "video-motion"
+    },
+    {
+      "id": "v4",
+      "title": "Abstract 3D Loop & Sound Design",
+      "embedUrl": "https://www.youtube.com/embed/3m4a5e3Sg0Y?autoplay=0",
+      "category": "video-motion"
+    },
+    {
+      "id": "v5",
+      "title": "Cinematic Visual Storytelling Edit",
+      "embedUrl": "https://www.youtube.com/embed/K844R2jH2U8?autoplay=0",
+      "category": "video-editing"
+    },
+    {
+      "id": "v6",
+      "title": "Commercial Advertising Post-Production",
+      "embedUrl": "https://www.youtube.com/embed/Pj15bX-dJiw?autoplay=0",
+      "category": "video-editing"
+    }
+  ]
+}

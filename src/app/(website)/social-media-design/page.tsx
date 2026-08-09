@@ -1,26 +1,7 @@
 import ProductGallery from "@/components/ProductGallery";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
-
-const socialImages = [
-  "/img/social/feed-1.png",
-  "/img/social/Artboard 1.png",
-  "/img/social/Artboard 2.png",
-  "/img/social/Artboard 3.png",
-  "/img/social/Artboard 4 (1).png",
-  "/img/social/Artboard 4 (2).png",
-  "/img/social/feed-2.png",
-  "/img/social/Artboard 5 (2).png",
-  "/img/social/Artboard 7.png",
-  "/img/social/Artboard 7 (1).png",
-  "/img/social/Artboard 10.png",
-  "/img/social/feed-3.png",
-  "/img/social/feed-4.png",
-  "/img/social/Artboard11.png",
-  "/img/social/Artboard222.png",
-  "/img/social/Artboard223.png",
-  "/img/social/feed-5.png",
-];
+import { getGalleryData } from "@/app/actions/cms";
 
 export const metadata = {
   title: "Social Media Design | Tosart Studio",
@@ -28,7 +9,10 @@ export const metadata = {
     "Elevate your digital presence. We design custom layouts, templates, and engaging visual systems tailored for brand storytelling on social media.",
 };
 
-export default function SocialMediaDesignPage() {
+export default async function SocialMediaDesignPage() {
+  const data = await getGalleryData();
+  const socialImages = data.socialImages || [];
+
   return (
     <div className="pt-32 pb-16">
       {/* Header Section */}

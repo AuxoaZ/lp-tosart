@@ -7,65 +7,29 @@ interface VideoItem {
   id: string;
   title: string;
   embedUrl: string;
-  category: "ai-marketing" | "video-motion" | "video-editing";
+  category: string;
 }
 
-const videoData: VideoItem[] = [
-  {
-    id: "v1",
-    title: "AI Product Commercial Showcase",
-    embedUrl: "https://www.youtube.com/embed/g2zP3ajD6o4?autoplay=0",
-    category: "ai-marketing",
-  },
-  {
-    id: "v2",
-    title: "Future of Branding - AI Concept",
-    embedUrl: "https://www.youtube.com/embed/1K3L4X4xO30?autoplay=0",
-    category: "ai-marketing",
-  },
-  {
-    id: "v3",
-    title: "Creative Motion Graphics Reel",
-    embedUrl: "https://www.youtube.com/embed/wzXQW2yVlhM?autoplay=0",
-    category: "video-motion",
-  },
-  {
-    id: "v4",
-    title: "Abstract 3D Loop & Sound Design",
-    embedUrl: "https://www.youtube.com/embed/3m4a5e3Sg0Y?autoplay=0",
-    category: "video-motion",
-  },
-  {
-    id: "v5",
-    title: "Cinematic Visual Storytelling Edit",
-    embedUrl: "https://www.youtube.com/embed/K844R2jH2U8?autoplay=0",
-    category: "video-editing",
-  },
-  {
-    id: "v6",
-    title: "Commercial Advertising Post-Production",
-    embedUrl: "https://www.youtube.com/embed/Pj15bX-dJiw?autoplay=0",
-    category: "video-editing",
-  },
-];
+type TabType = "ai-marketing" | "video-motion" | "video-editing";
 
-type TabType = "all" | "ai-marketing" | "video-motion" | "video-editing";
+interface VideoMarketingClientProps {
+  initialVideos: VideoItem[];
+}
 
-export default function VideoMarketingClient() {
-  const [activeTab, setActiveTab] = useState<TabType>("all");
+export default function VideoMarketingClient({ initialVideos }: VideoMarketingClientProps) {
+  const [activeTab, setActiveTab] = useState<TabType>("ai-marketing");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const tabs: { id: TabType; label: string }[] = [
-    { id: "all", label: "All Works" },
+    // { id: "all", label: "All Works" },
     { id: "ai-marketing", label: "AI Marketing" },
     { id: "video-motion", label: "Video Motion" },
     { id: "video-editing", label: "Video Editing" },
   ];
 
-  const filteredVideos =
-    activeTab === "all"
-      ? videoData
-      : videoData.filter((video) => video.category === activeTab);
+  const filteredVideos = initialVideos.filter(
+    (video) => video.category === activeTab
+  );
 
   const handleTabChange = (tabId: TabType) => {
     setActiveTab(tabId);
@@ -84,7 +48,8 @@ export default function VideoMarketingClient() {
     );
   };
 
-  const currentVideo = filteredVideos[currentIndex];
+  const safeIndex = currentIndex >= filteredVideos.length ? 0 : currentIndex;
+  const currentVideo = filteredVideos[safeIndex];
 
   return (
     <div>
@@ -170,7 +135,7 @@ export default function VideoMarketingClient() {
                       key={idx}
                       onClick={() => setCurrentIndex(idx)}
                       className={`h-1.5 rounded-full transition-all duration-300 ${
-                        idx === currentIndex
+                        idx === safeIndex
                           ? "w-6 bg-primary"
                           : "w-1.5 bg-white/20 hover:bg-white/40"
                       }`}
@@ -180,7 +145,7 @@ export default function VideoMarketingClient() {
                 </div>
                 {/* Text index indicator */}
                 <span className="text-xs font-bold tracking-widest text-white/40 bg-white/5 border border-white/5 rounded-full px-3 py-1 whitespace-nowrap">
-                  {currentIndex + 1} / {filteredVideos.length}
+                  {safeIndex + 1} / {filteredVideos.length}
                 </span>
               </div>
             )}

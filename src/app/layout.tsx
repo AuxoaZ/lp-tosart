@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Syne, Plus_Jakarta_Sans } from "next/font/google";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import "./globals.css";
 
 const syne = Syne({
@@ -34,12 +31,7 @@ export default function RootLayout({
           style={{ backgroundImage: "url('/img/hero-background.png')" }}
         />
         <div className="relative z-10 flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-          <FloatingWhatsApp />
+          {children}
         </div>
       </body>
     </html>

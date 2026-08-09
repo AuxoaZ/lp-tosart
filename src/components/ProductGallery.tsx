@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
+import LazyImage from "./LazyImage";
 
 interface ProductGalleryProps {
   title: string;
@@ -107,7 +108,7 @@ export default function ProductGallery({
         </h2>
 
         {/* Single Unified Container with transparent blur background */}
-        <div className="bg-base-300/50 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:p-10 lg:p-12 shadow-2xl">
+        <div className="bg-base-300/50 backdrop-blur-2xl border border-white/10 rounded-4xl p-6 sm:p-10 lg:p-12 shadow-2xl">
           {layout === "masonry" ? (
             <div className="columns-2 md:columns-3 gap-6 lg:gap-8">
               {images.map((src, idx) => (
@@ -115,11 +116,13 @@ export default function ProductGallery({
                   key={idx}
                   className="break-inside-avoid mb-6 flex items-center justify-center"
                 >
-                  <img
+                  <LazyImage
                     src={src}
                     alt={`${title} Item ${idx + 1}`}
-                    className="w-full h-auto rounded-[1.25rem] sm:rounded-lg object-contain hover:scale-[1.03] active:scale-98 transition-all duration-300 cursor-pointer shadow-md"
+                    className="w-full h-auto object-contain hover:scale-[1.03] active:scale-98 transition-all duration-300 cursor-pointer shadow-md"
+                    wrapperClassName="rounded-[1.25rem] sm:rounded-lg"
                     onClick={() => setActiveModalIndex(idx)}
+                    loading="lazy"
                   />
                 </div>
               ))}
@@ -131,11 +134,12 @@ export default function ProductGallery({
                   key={idx}
                   className="relative w-full flex items-center justify-center"
                 >
-                  <img
+                  <LazyImage
                     src={src}
                     alt={`${title} Item ${idx + 1}`}
-                    className="w-full h-auto object-contain max-h-[280px] hover:scale-[1.05] active:scale-95 transition-all duration-300 cursor-pointer"
+                    className="w-full h-auto object-contain max-h-70 hover:scale-[1.05] active:scale-95 transition-all duration-300 cursor-pointer"
                     onClick={() => setActiveModalIndex(idx)}
+                    loading="lazy"
                   />
                 </div>
               ))}
@@ -172,7 +176,7 @@ export default function ProductGallery({
               {/* Image Card Container */}
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white rounded-3xl p-6 sm:p-10 md:p-12 w-[90vw] max-w-[500px] aspect-square relative flex items-center justify-center shadow-2xl border border-white/20 select-none"
+                className="bg-white rounded-3xl p-6 sm:p-10 md:p-12 w-[90vw] max-w-125 aspect-square relative flex items-center justify-center shadow-2xl border border-white/20 select-none"
               >
                 <div className="relative w-full h-full">
                   <Image
@@ -218,7 +222,7 @@ export default function ProductGallery({
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]"
         >
           {images.map((src, idx) => (
             <div
@@ -309,7 +313,7 @@ export default function ProductGallery({
             {/* Image Card Container */}
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl p-6 sm:p-10 md:p-12 w-[90vw] max-w-[500px] aspect-square relative flex items-center justify-center shadow-2xl border border-white/20 select-none"
+              className="bg-white rounded-3xl p-6 sm:p-10 md:p-12 w-[90vw] max-w-125 aspect-square relative flex items-center justify-center shadow-2xl border border-white/20 select-none"
             >
               <div className="relative w-full h-full">
                 <Image
