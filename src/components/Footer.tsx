@@ -2,7 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiInstagram, FiTwitter, FiMail } from "react-icons/fi";
 
-export default function Footer({ media }: { media?: { whatsapp: string; instagram: string; email: string; } }) {
+export default function Footer({
+  media,
+}: {
+  media?: { whatsapp: string; instagram: string; email: string };
+}) {
   const emailAddress = media?.email || "hello@tosart.studio";
 
   return (
@@ -77,12 +81,6 @@ export default function Footer({ media }: { media?: { whatsapp: string; instagra
             Ready to start your visual project? Let&apos;s discuss your ideas
             with us.
           </p>
-          <a
-            href={`mailto:${emailAddress}`}
-            className="text-sm font-semibold text-primary hover:underline flex items-center gap-2"
-          >
-            <FiMail className="w-4 h-4" /> {emailAddress}
-          </a>
         </div>
       </div>
 
