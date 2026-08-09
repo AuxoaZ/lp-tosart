@@ -94,7 +94,7 @@ async function fetchFromGithub(filePath: string) {
 // Helper: Push file to GitHub API
 async function pushToGithub(
   filePath: string,
-  contentStr: string,
+  content: string | Buffer,
   sha?: string,
   commitMessage = "Update via CMS",
 ) {
@@ -102,7 +102,9 @@ async function pushToGithub(
     throw new Error("GitHub credentials not configured.");
 
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`;
-  const base64Content = Buffer.from(contentStr).toString("base64");
+  const base64Content = typeof content === "string"
+    ? Buffer.from(content, "utf-8").toString("base64")
+    : content.toString("base64");
 
   const body: any = {
     message: commitMessage,
@@ -395,14 +397,23 @@ export async function uploadImageAction(
     try {
       // 1. Upload file to GitHub repo
       const existingSha = await getFileSha(fileRepoPath);
+      const fileBuffer = Buffer.from(fileBase64, "base64");
       await pushToGithub(
         fileRepoPath,
-        Buffer.from(fileBase64, "base64").toString("binary"),
+        fileBuffer,
         existingSha || undefined,
         `Upload image ${fileName} via CMS`,
       );
 
-      // 2. Add to db.json
+      // 2. Write copy to local disk so localhost can serve it immediately without git pull
+      try {
+        await fs.mkdir(UPLOADS_DIR, { recursive: true });
+        await fs.writeFile(path.join(UPLOADS_DIR, fileName), fileBuffer);
+      } catch (localErr) {
+        console.warn("Gagal menyimpan salinan lokal gambar:", localErr);
+      }
+
+      // 3. Add to db.json
       const gitData = await fetchFromGithub("src/data/db.json");
       const currentDb = gitData ? gitData.parsed : await getGalleryData();
       const dbSha = gitData ? gitData.sha : undefined;
