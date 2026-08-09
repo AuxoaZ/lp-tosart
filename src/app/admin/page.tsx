@@ -27,10 +27,12 @@ import {
   updateGalleryData, 
   uploadImageAction, 
   deleteImageAction,
-  updateVideosAction
+  updateVideosAction,
+  updateTypewritingAction,
+  updateMediaAction
 } from "@/app/actions/cms";
 
-type TabType = "apparel" | "accessories" | "logo-brand" | "visuals" | "social" | "videos";
+type TabType = "apparel" | "accessories" | "logo-brand" | "visuals" | "social" | "videos" | "typewriting" | "media";
 
 interface VideoItem {
   id: string;
@@ -63,6 +65,13 @@ export default function AdminPage() {
   const [homeApparel, setHomeApparel] = useState<string[]>([]);
   const [homeAccessories, setHomeAccessories] = useState<string[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [copywriting, setCopywriting] = useState<any>({
+    hero: { badge: "", title: "", subtitle: "", words: [], stats: [{ value: "", label: "" }, { value: "", label: "" }] },
+    whoWeAre: { title: "", paragraphs: [] },
+    services: { title: "", subtitle: "", items: [] }
+  });
+  const [newWord, setNewWord] = useState("");
+  const [mediaSettings, setMediaSettings] = useState({ whatsapp: "", instagram: "", email: "" });
 
   // Video Form states
   const [newVideoTitle, setNewVideoTitle] = useState("");
@@ -103,6 +112,12 @@ export default function AdminPage() {
       setHomeApparel(data.homeApparelImages || []);
       setHomeAccessories(data.homeAccessoriesImages || []);
       setVideos(data.videos || []);
+      setCopywriting(data.typewriting || {
+        hero: { badge: "", title: "", subtitle: "", words: [], stats: [{ value: "", label: "" }, { value: "", label: "" }] },
+        whoWeAre: { title: "", paragraphs: [] },
+        services: { title: "", subtitle: "", items: [] }
+      });
+      setMediaSettings(data.media || { whatsapp: "", instagram: "", email: "" });
     } catch (err) {
       showToast("Gagal memuat data!", "error");
     } finally {
@@ -345,6 +360,77 @@ export default function AdminPage() {
     }
   };
 
+  // Rich Copywriting (Typewriting) Handlers
+  const handleAddHeroWord = () => {
+    if (!newWord.trim()) return;
+    setCopywriting((prev: any) => ({
+      ...prev,
+      hero: {
+        ...prev.hero,
+        words: [...(prev.hero?.words || []), newWord.trim()]
+      }
+    }));
+    setNewWord("");
+  };
+
+  const handleDeleteHeroWord = (index: number) => {
+    setCopywriting((prev: any) => ({
+      ...prev,
+      hero: {
+        ...prev.hero,
+        words: (prev.hero?.words || []).filter((_: any, idx: number) => idx !== index)
+      }
+    }));
+  };
+
+  const moveHeroWord = (index: number, direction: "up" | "down") => {
+    const words = [...(copywriting.hero?.words || [])];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= words.length) return;
+    const temp = words[index];
+    words[index] = words[targetIndex];
+    words[targetIndex] = temp;
+    setCopywriting((prev: any) => ({
+      ...prev,
+      hero: { ...prev.hero, words }
+    }));
+  };
+
+  const saveTypewritingChanges = async () => {
+    setSavingData(true);
+    try {
+      const res = await updateTypewritingAction(copywriting);
+      if (res.success) {
+        showToast("Perubahan teks copywriting berhasil disimpan!", "success");
+        await loadAllData();
+      }
+    } catch (err: any) {
+      showToast(`Gagal menyimpan: ${err.message}`, "error");
+    } finally {
+      setSavingData(false);
+    }
+  };
+
+  // Media handlers
+  const saveMediaChanges = async () => {
+    if (!mediaSettings.whatsapp || !mediaSettings.instagram || !mediaSettings.email) {
+      showToast("Semua bidang kontak wajib diisi!", "error");
+      return;
+    }
+    setSavingData(true);
+    try {
+      const res = await updateMediaAction(mediaSettings);
+      if (res.success) {
+        showToast("Kontak media berhasil disimpan!", "success");
+        await loadAllData();
+      }
+    } catch (err: any) {
+      showToast(`Gagal menyimpan: ${err.message}`, "error");
+    } finally {
+      setSavingData(false);
+    }
+  };
+
   const categoryMapping = {
     apparel: "apparelImages",
     accessories: "accessoriesImages",
@@ -501,6 +587,8 @@ export default function AdminPage() {
           <TabButton active={activeTab === "visuals"} icon={<FiFileText />} label="Visual Designs" onClick={() => setActiveTab("visuals")} />
           <TabButton active={activeTab === "social"} icon={<FiInstagram />} label="Social Media" onClick={() => setActiveTab("social")} />
           <TabButton active={activeTab === "videos"} icon={<FiVideo />} label="Video Marketing" onClick={() => setActiveTab("videos")} />
+          <TabButton active={activeTab === "typewriting"} icon={<FiFileText />} label="Typewriting Text" onClick={() => setActiveTab("typewriting")} />
+          <TabButton active={activeTab === "media"} icon={<FiLayers />} label="Media & Social" onClick={() => setActiveTab("media")} />
         </div>
 
         {/* Content Area */}
@@ -514,7 +602,7 @@ export default function AdminPage() {
           ) : (
             <>
               {/* IMAGE CATEGORIES EDITOR */}
-              {activeTab !== "videos" && (
+              {activeTab !== "videos" && activeTab !== "typewriting" && activeTab !== "media" && (
                 <div className="space-y-6">
                   {/* Category Header */}
                   <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
@@ -806,6 +894,351 @@ export default function AdminPage() {
                         ))}
                       </div>
                     )}
+                  </div>
+                </div>
+              )}
+
+              {/* TYPEWRITING EDITOR */}
+              {activeTab === "typewriting" && (
+                <div className="space-y-8">
+                  {/* Category Header */}
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                      <h2 className="text-2xl font-syne font-bold uppercase text-white flex items-center gap-2">
+                        Homepage Copywriting Manager
+                      </h2>
+                      <p className="text-xs text-white/50 font-light mt-1">
+                        Kelola konten teks dinamis halaman Beranda dari Hero, Who We Are, hingga Services Slider.
+                      </p>
+                    </div>
+                    <button 
+                      onClick={saveTypewritingChanges}
+                      disabled={savingData}
+                      className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
+                    >
+                      {savingData ? <span className="loading loading-spinner loading-sm"></span> : <FiSave className="w-4 h-4" />}
+                      Simpan Konten Teks
+                    </button>
+                  </div>
+
+                  {/* HERO SECTION CONFIG */}
+                  <div className="border border-white/5 bg-white/[0.02] rounded-3xl p-6 space-y-6">
+                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">1. Hero Section</h3>
+                    
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-white/50">Top Badge Text</label>
+                      <input 
+                        type="text"
+                        value={copywriting.hero?.badge || ""}
+                        onChange={(e) => setCopywriting((prev: any) => ({ ...prev, hero: { ...prev.hero, badge: e.target.value } }))}
+                        className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-white/50">Main Title (Gunakan \n untuk baris baru)</label>
+                        <textarea
+                          rows={2}
+                          value={copywriting.hero?.title || ""}
+                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, hero: { ...prev.hero, title: e.target.value } }))}
+                          className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2 text-sm text-white"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-white/50">Tagline / Subtitle</label>
+                        <textarea
+                          rows={2}
+                          value={copywriting.hero?.subtitle || ""}
+                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, hero: { ...prev.hero, subtitle: e.target.value } }))}
+                          className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2 text-sm text-white"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Stats Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Stat 1 */}
+                      <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <h4 className="text-xs uppercase font-bold text-primary">Stat 1</h4>
+                        <div className="space-y-1">
+                          <label className="text-[10px] uppercase font-bold text-white/50">Value</label>
+                          <input 
+                            type="text"
+                            value={copywriting.hero?.stats?.[0]?.value || ""}
+                            onChange={(e) => setCopywriting((prev: any) => {
+                              const stats = [...(prev.hero?.stats || [])];
+                              stats[0] = { ...(stats[0] || {}), value: e.target.value };
+                              return { ...prev, hero: { ...prev.hero, stats } };
+                            })}
+                            className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] uppercase font-bold text-white/50">Label</label>
+                          <input 
+                            type="text"
+                            value={copywriting.hero?.stats?.[0]?.label || ""}
+                            onChange={(e) => setCopywriting((prev: any) => {
+                              const stats = [...(prev.hero?.stats || [])];
+                              stats[0] = { ...(stats[0] || {}), label: e.target.value };
+                              return { ...prev, hero: { ...prev.hero, stats } };
+                            })}
+                            className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Stat 2 */}
+                      <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <h4 className="text-xs uppercase font-bold text-primary">Stat 2</h4>
+                        <div className="space-y-1">
+                          <label className="text-[10px] uppercase font-bold text-white/50">Value</label>
+                          <input 
+                            type="text"
+                            value={copywriting.hero?.stats?.[1]?.value || ""}
+                            onChange={(e) => setCopywriting((prev: any) => {
+                              const stats = [...(prev.hero?.stats || [])];
+                              stats[1] = { ...(stats[1] || {}), value: e.target.value };
+                              return { ...prev, hero: { ...prev.hero, stats } };
+                            })}
+                            className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] uppercase font-bold text-white/50">Label</label>
+                          <input 
+                            type="text"
+                            value={copywriting.hero?.stats?.[1]?.label || ""}
+                            onChange={(e) => setCopywriting((prev: any) => {
+                              const stats = [...(prev.hero?.stats || [])];
+                              stats[1] = { ...(stats[1] || {}), label: e.target.value };
+                              return { ...prev, hero: { ...prev.hero, stats } };
+                            })}
+                            className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Word list animation */}
+                    <div className="space-y-4 pt-4 border-t border-white/5">
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-white/60">Typewriter Animation Words</h4>
+                      
+                      <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex gap-4 items-end">
+                        <div className="space-y-1 grow">
+                          <label className="text-[10px] uppercase font-bold text-white/50">Tambah Kata Baru</label>
+                          <input 
+                            type="text" 
+                            placeholder="Contoh: identity"
+                            value={newWord}
+                            onChange={(e) => setNewWord(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2 text-xs text-white"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleAddHeroWord}
+                          className="btn btn-primary rounded-xl px-5 btn-sm cursor-pointer"
+                        >
+                          Tambah
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(copywriting.hero?.words || []).map((word: string, idx: number) => (
+                          <div 
+                            key={idx}
+                            className="bg-black/40 border border-white/5 rounded-xl px-4 py-2 flex justify-between items-center text-sm"
+                          >
+                            <span className="font-semibold text-white">{word}</span>
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => moveHeroWord(idx, "up")}
+                                disabled={idx === 0}
+                                className="btn btn-square btn-xs bg-black/40 border border-white/10 text-white disabled:opacity-20"
+                              >
+                                <FiArrowUp className="w-3 h-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => moveHeroWord(idx, "down")}
+                                disabled={idx === (copywriting.hero?.words || []).length - 1}
+                                className="btn btn-square btn-xs bg-black/40 border border-white/10 text-white disabled:opacity-20"
+                              >
+                                <FiArrowDown className="w-3 h-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteHeroWord(idx)}
+                                className="btn btn-square btn-xs bg-red-950/70 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white"
+                              >
+                                <FiTrash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WHO WE ARE SECTION CONFIG */}
+                  <div className="border border-white/5 bg-white/[0.02] rounded-3xl p-6 space-y-4">
+                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">2. Who We Are Section</h3>
+                    
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-white/50">Section Title</label>
+                      <input 
+                        type="text"
+                        value={copywriting.whoWeAre?.title || ""}
+                        onChange={(e) => setCopywriting((prev: any) => ({ ...prev, whoWeAre: { ...prev.whoWeAre, title: e.target.value } }))}
+                        className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-4 pt-2">
+                      <h4 className="text-xs uppercase font-bold text-white/40">Paragraphs</h4>
+                      {[0, 1, 2].map((idx) => (
+                        <div key={idx} className="space-y-1">
+                          <label className="text-[10px] uppercase font-bold text-white/50">Paragraf {idx + 1}</label>
+                          <textarea
+                            rows={3}
+                            value={copywriting.whoWeAre?.paragraphs?.[idx] || ""}
+                            onChange={(e) => setCopywriting((prev: any) => {
+                              const paragraphs = [...(prev.whoWeAre?.paragraphs || [])];
+                              paragraphs[idx] = e.target.value;
+                              return { ...prev, whoWeAre: { ...prev.whoWeAre, paragraphs } };
+                            })}
+                            className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* SERVICES SECTION CONFIG */}
+                  <div className="border border-white/5 bg-white/[0.02] rounded-3xl p-6 space-y-6">
+                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">3. Services Slider Section</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-white/50">Section Title</label>
+                        <input 
+                          type="text"
+                          value={copywriting.services?.title || ""}
+                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, services: { ...prev.services, title: e.target.value } }))}
+                          className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-white/50">Section Subtitle</label>
+                        <input 
+                          type="text"
+                          value={copywriting.services?.subtitle || ""}
+                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, services: { ...prev.services, subtitle: e.target.value } }))}
+                          className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Services Items Array */}
+                    <div className="space-y-4 pt-2">
+                      <h4 className="text-xs uppercase font-bold text-white/40">Slider Cards Content</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(copywriting.services?.items || []).map((item: any, idx: number) => (
+                          <div key={idx} className="border border-white/5 bg-white/5 rounded-2xl p-4 space-y-3">
+                            <h5 className="text-[10px] uppercase font-bold text-primary">Card {idx + 1}: Default "{["Apparel Design", "Social Media Design", "Video Marketing", "Custom & Accessories", "Logo & Branding"][idx]}"</h5>
+                            <div className="space-y-1">
+                              <label className="text-[10px] uppercase font-bold text-white/30">Display Title</label>
+                              <input 
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => setCopywriting((prev: any) => {
+                                  const items = [...(prev.services?.items || [])];
+                                  items[idx] = { ...(items[idx] || {}), title: e.target.value };
+                                  return { ...prev, services: { ...prev.services, items } };
+                                })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] uppercase font-bold text-white/30">Display Description</label>
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => setCopywriting((prev: any) => {
+                                  const items = [...(prev.services?.items || [])];
+                                  items[idx] = { ...(items[idx] || {}), description: e.target.value };
+                                  return { ...prev, services: { ...prev.services, items } };
+                                })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )}
+
+              {/* MEDIA & CONTACT EDITOR */}
+              {activeTab === "media" && (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                      <h2 className="text-2xl font-syne font-bold uppercase text-white flex items-center gap-2">
+                        Media & Kontak Manager
+                      </h2>
+                      <p className="text-xs text-white/50 font-light mt-1">
+                        Kelola informasi kontak dan media sosial yang terintegrasi di seluruh halaman website.
+                      </p>
+                    </div>
+                    <button 
+                      onClick={saveMediaChanges}
+                      disabled={savingData}
+                      className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
+                    >
+                      {savingData ? <span className="loading loading-spinner loading-sm"></span> : <FiSave className="w-4 h-4" />}
+                      Simpan Kontak
+                    </button>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/5 rounded-2xl p-6 space-y-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-white/50">Nomor WhatsApp (Kode Negara, Tanpa Tanda +/spasi)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Contoh: 6285904430581"
+                        value={mediaSettings.whatsapp}
+                        onChange={(e) => setMediaSettings(prev => ({ ...prev, whatsapp: e.target.value }))}
+                        className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-white/50">Username Instagram</label>
+                      <input 
+                        type="text" 
+                        placeholder="Contoh: tosart.std"
+                        value={mediaSettings.instagram}
+                        onChange={(e) => setMediaSettings(prev => ({ ...prev, instagram: e.target.value }))}
+                        className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-white/50">Email Studio</label>
+                      <input 
+                        type="email" 
+                        placeholder="Contoh: hello@tosart.studio"
+                        value={mediaSettings.email}
+                        onChange={(e) => setMediaSettings(prev => ({ ...prev, email: e.target.value }))}
+                        className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
+                      />
+                    </div>
                   </div>
                 </div>
               )}

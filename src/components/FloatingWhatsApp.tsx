@@ -1,7 +1,7 @@
 import { FaWhatsapp } from "react-icons/fa";
 
-export default function FloatingWhatsApp() {
-  const whatsappNumber = "6281234567890"; // Placeholder number - can be modified by the user
+export default function FloatingWhatsApp({ media }: { media?: { whatsapp: string; instagram: string; email: string; } }) {
+  const whatsappNumber = media?.whatsapp || "6285904430581"; // Dynamic from CMS or fallback
   const message = "Hello Tosart Studio! I'm interested in your services.";
   const encodedMessage = encodeURIComponent(message);
   const waUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
@@ -23,7 +23,7 @@ export default function FloatingWhatsApp() {
       >
         {/* Idle Pulsing Ring */}
         <span className="absolute inset-0 rounded-full bg-[#25D366]/40 animate-ping opacity-75" />
-        
+
         <FaWhatsapp className="w-8 h-8" />
       </a>
     </div>

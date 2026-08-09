@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FiChevronLeft, FiChevronRight, FiArrowRight } from "react-icons/fi";
 
-const services = [
+const staticServicesData = [
   {
     title: "Apparel Design",
     description:
@@ -47,18 +47,30 @@ const services = [
   },
 ];
 
-export default function ServicesSlider() {
+export default function ServicesSlider({ data }: { data?: any }) {
+  const sectionTitle = data?.title || "Our Services";
+  const sectionSubtitle = data?.subtitle || "Comprehensive creative solutions to elevate your brand and apparel line";
+
+  const mergedServices = staticServicesData.map((service, idx) => {
+    const dbItem = data?.items?.[idx];
+    return {
+      ...service,
+      title: dbItem?.title || service.title,
+      description: dbItem?.description || service.description,
+    };
+  });
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % services.length);
+    setCurrentIndex((prev) => (prev + 1) % mergedServices.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev === 0 ? services.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? mergedServices.length - 1 : prev - 1));
   };
 
-  const currentService = services[currentIndex];
+  const currentService = mergedServices[currentIndex];
 
   return (
     <section
@@ -68,16 +80,15 @@ export default function ServicesSlider() {
       {/* Header */}
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-syne font-bold uppercase tracking-wide mb-4">
-          Our Services
+          {sectionTitle}
         </h2>
         <p className="text-base-content/70">
-          Comprehensive creative solutions to elevate your brand and apparel
-          line
+          {sectionSubtitle}
         </p>
 
         {/* Pagination Dots */}
         <div className="flex justify-center gap-2 mt-8">
-          {services.map((_, idx) => (
+          {mergedServices.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
@@ -112,9 +123,6 @@ export default function ServicesSlider() {
 
         {/* Left Side: Visual Card */}
         <div className="w-full lg:w-1/2 aspect-4/5 max-w-125 relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 z-10">
-          {/* <div
-            className={`absolute inset-0 bg-linear-to-br ${currentService.color} opacity-40 mix-blend-overlay z-10 transition-colors duration-500`}
-          ></div> */}
           <img
             src={currentService.image}
             alt={currentService.title}
@@ -123,15 +131,30 @@ export default function ServicesSlider() {
           />
           {/* Overlay Text on Image */}
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-20 flex flex-col justify-end p-8">
-            {/* <span className="text-primary font-medium text-sm mb-2">
-              {currentService.title} Services
-            </span> */}
             <h3 className="text-2xl md:text-3xl font-syne font-black text-white italic uppercase leading-none">
               {currentService.title.split(" ")[0]} <br />
               <span className="text-transparent bg-clip-text bg-linear-to-r from-white to-white/50">
                 {currentService.title.split(" ").slice(1).join(" ")}
               </span>
             </h3>
+          </div>
+
+          {/* Mobile Navigation Buttons (Overlaying image in the center, transparent) */}
+          <div className="absolute inset-y-0 left-3 right-3 flex justify-between items-center z-30 lg:hidden pointer-events-none">
+            <button
+              onClick={prevSlide}
+              className="btn btn-circle btn-sm bg-black/40 border border-white/10 text-white hover:bg-primary pointer-events-auto backdrop-blur-xs"
+              aria-label="Previous Slide"
+            >
+              <FiChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="btn btn-circle btn-sm bg-black/40 border border-white/10 text-white hover:bg-primary pointer-events-auto backdrop-blur-xs"
+              aria-label="Next Slide"
+            >
+              <FiChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
@@ -154,28 +177,9 @@ export default function ServicesSlider() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <div className="flex lg:hidden justify-center items-center gap-4 mt-8">
-        <button
-          onClick={prevSlide}
-          className="btn btn-circle btn-sm bg-base-300 border-none text-white"
-        >
-          <FiChevronLeft />
-        </button>
-        <span className="text-xs tracking-widest">
-          {currentIndex + 1} / {services.length}
-        </span>
-        <button
-          onClick={nextSlide}
-          className="btn btn-circle btn-sm bg-base-300 border-none text-white"
-        >
-          <FiChevronRight />
-        </button>
-      </div>
-
-      {/* Desktop Indicator */}
-      <div className="hidden lg:block text-center mt-12 text-sm tracking-widest text-base-content/50">
-        {currentIndex + 1} / {services.length}
+      {/* Indicator */}
+      <div className="text-center mt-8 lg:mt-12 text-sm tracking-widest text-base-content/50">
+        {currentIndex + 1} / {mergedServices.length}
       </div>
     </section>
   );

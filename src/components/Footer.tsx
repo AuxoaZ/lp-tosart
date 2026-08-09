@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiInstagram, FiTwitter, FiMail } from "react-icons/fi";
 
-export default function Footer() {
+export default function Footer({ media }: { media?: { whatsapp: string; instagram: string; email: string; } }) {
+  const emailAddress = media?.email || "hello@tosart.studio";
+
   return (
     <footer
       id="contact"
@@ -10,45 +12,33 @@ export default function Footer() {
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
         <div className="space-y-6">
-          <Link href="/" className="inline-block relative w-32 h-10">
-            <Image
-              src="/img/tosart-logo.png"
-              alt="Tosart Logo"
-              fill
-              className="object-contain object-left"
-            />
+          <Link href="/" className="flex items-center gap-2">
+            <div className="relative w-8 h-8">
+              <Image
+                src="/img/tosart-logo.png"
+                alt="Tosart Logo"
+                fill
+                className="object-contain object-left"
+              />
+            </div>
+            <span className="font-syne font-bold text-lg uppercase tracking-widest text-white">
+              Tosart Studio
+            </span>
           </Link>
           <p className="text-sm text-base-content/60 max-w-xs">
             A creative studio specializing in apparel design, branding, and
             visual content production.
           </p>
-          <div className="flex gap-4">
-            <a
-              href="#"
-              className="btn btn-circle btn-sm bg-base-300 border-none hover:bg-primary text-white"
-            >
-              <FiInstagram />
-            </a>
-            <a
-              href="#"
-              className="btn btn-circle btn-sm bg-base-300 border-none hover:bg-primary text-white"
-            >
-              <FiTwitter />
-            </a>
-            <a
-              href="#"
-              className="btn btn-circle btn-sm bg-base-300 border-none hover:bg-primary text-white"
-            >
-              <FiMail />
-            </a>
-          </div>
         </div>
 
         <div>
           <h4 className="font-syne font-bold mb-6">Services</h4>
           <ul className="space-y-3 text-sm text-base-content/70">
             <li>
-              <Link href="/apparel-design" className="hover:text-primary transition-colors">
+              <Link
+                href="/apparel-design"
+                className="hover:text-primary transition-colors"
+              >
                 Apparel Design
               </Link>
             </li>
@@ -63,12 +53,18 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <Link href="/social-media-design" className="hover:text-primary transition-colors">
+              <Link
+                href="/social-media-design"
+                className="hover:text-primary transition-colors"
+              >
                 Social Media Design
               </Link>
             </li>
             <li>
-              <Link href="/video-marketing" className="hover:text-primary transition-colors">
+              <Link
+                href="/video-marketing"
+                className="hover:text-primary transition-colors"
+              >
                 Video Marketing
               </Link>
             </li>
@@ -78,13 +74,14 @@ export default function Footer() {
         <div>
           <h4 className="font-syne font-bold mb-6">Contact Us</h4>
           <p className="text-sm text-base-content/70 mb-4">
-            Ready to start your visual project? Let&apos;s discuss your ideas with us.
+            Ready to start your visual project? Let&apos;s discuss your ideas
+            with us.
           </p>
           <a
-            href="mailto:hello@tosart.studio"
-            className="btn bg-primary rounded-full w-full sm:w-auto text-white"
+            href={`mailto:${emailAddress}`}
+            className="text-sm font-semibold text-primary hover:underline flex items-center gap-2"
           >
-            Get In Touch
+            <FiMail className="w-4 h-4" /> {emailAddress}
           </a>
         </div>
       </div>

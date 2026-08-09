@@ -30,6 +30,29 @@ interface GalleryData {
     embedUrl: string;
     category: string;
   }[];
+  typewriting: {
+    hero: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      words: string[];
+      stats: { value: string; label: string }[];
+    };
+    whoWeAre: {
+      title: string;
+      paragraphs: string[];
+    };
+    services: {
+      title: string;
+      subtitle: string;
+      items: { title: string; description: string }[];
+    };
+  };
+  media: {
+    whatsapp: string;
+    instagram: string;
+    email: string;
+  };
 }
 
 // Check if GitHub credentials are fully configured
@@ -203,6 +226,57 @@ export async function getGalleryData(): Promise<GalleryData> {
       homeApparelImages: [],
       homeAccessoriesImages: [],
       videos: [],
+      typewriting: {
+        hero: {
+          badge: "Apparel Design, Branding & Visual Studio",
+          title: "Beyond\nVisuals",
+          subtitle: "Designing visuals that connect culture, identity, and storytelling.",
+          words: ["culture", "identity", "storytelling"],
+          stats: [
+            { value: "5+", label: "Years Experience" },
+            { value: "400+", label: "Brands Handled" }
+          ]
+        },
+        whoWeAre: {
+          title: "Who We Are",
+          paragraphs: [
+            "Tosart is a creative studio specializing in apparel design, branding, and visual content production. We help brands transform ideas into visuals that feel distinctive, relevant, and production-ready.",
+            "With years of experience working across various industries and creative directions, we focus on creating designs that are not only visually strong, but also aligned with brand identity and audience culture.",
+            "From apparel graphics to digital visuals, every project is approached with attention to detail, concept development, and strong visual storytelling."
+          ]
+        },
+        services: {
+          title: "Our Services",
+          subtitle: "Comprehensive creative solutions to elevate your brand and apparel line",
+          items: [
+            {
+              title: "Apparel Design",
+              description: "T-shirt, hoodie, jersey, and custom apparel design with strong visual direction and production-ready output."
+            },
+            {
+              title: "Social Media Design",
+              description: "Creative content and visual systems tailored for digital branding and audience engagement."
+            },
+            {
+              title: "Video Marketing",
+              description: "Visual editing, motion graphics, and video production to tell your brand story dynamically."
+            },
+            {
+              title: "Custom & Accessories",
+              description: "Creative support for hats, bags, patches, tags, zipper pulls, packaging, and other supporting merchandise."
+            },
+            {
+              title: "Logo & Branding",
+              description: "Brand identity design that builds a recognizable and consistent visual presence."
+            }
+          ]
+        }
+      },
+      media: {
+        whatsapp: "6285904430581",
+        instagram: "tosart.std",
+        email: "hello@tosart.studio"
+      }
     };
   }
 }
@@ -451,5 +525,89 @@ export async function updateVideosAction(newVideosList: any[]) {
   } catch (error: any) {
     console.error("Local videos update failed:", error);
     throw new Error(`Gagal memperbarui video secara lokal: ${error.message}`);
+  }
+}
+
+// Update Typewriting (Copywriting) List
+export async function updateTypewritingAction(newTypewritingData: any) {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) throw new Error("Unauthorized");
+
+  if (isGithubConfigured()) {
+    try {
+      const gitData = await fetchFromGithub("src/data/db.json");
+      const currentDb = gitData ? gitData.parsed : await getGalleryData();
+      const sha = gitData ? gitData.sha : undefined;
+
+      currentDb.typewriting = newTypewritingData;
+
+      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), sha, "Update copywriting texts via CMS");
+      
+      revalidatePath("/");
+      return { success: true };
+    } catch (error: any) {
+      console.error("GitHub typewriting update failed:", error);
+      throw new Error(`Gagal memperbarui konten teks di GitHub: ${error.message}`);
+    }
+  }
+
+  // Local fallback
+  try {
+    const fileContent = await fs.readFile(LOCAL_DB_PATH, "utf-8");
+    const currentDb = JSON.parse(fileContent);
+
+    currentDb.typewriting = newTypewritingData;
+
+    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
+    
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Local typewriting update failed:", error);
+    throw new Error(`Gagal memperbarui konten teks secara lokal: ${error.message}`);
+  }
+}
+
+// Update Media Contact Settings
+export async function updateMediaAction(newMediaSettings: { whatsapp: string; instagram: string; email: string; }) {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) throw new Error("Unauthorized");
+
+  if (isGithubConfigured()) {
+    try {
+      const gitData = await fetchFromGithub("src/data/db.json");
+      const currentDb = gitData ? gitData.parsed : await getGalleryData();
+      const sha = gitData ? gitData.sha : undefined;
+
+      currentDb.media = newMediaSettings;
+
+      await pushToGithub("src/data/db.json", JSON.stringify(currentDb, null, 2), sha, "Update media settings via CMS");
+      
+      revalidatePath("/");
+      revalidatePath("/apparel-design");
+      revalidatePath("/social-media-design");
+      return { success: true };
+    } catch (error: any) {
+      console.error("GitHub media settings update failed:", error);
+      throw new Error(`Gagal memperbarui kontak di GitHub: ${error.message}`);
+    }
+  }
+
+  // Local fallback
+  try {
+    const fileContent = await fs.readFile(LOCAL_DB_PATH, "utf-8");
+    const currentDb = JSON.parse(fileContent);
+
+    currentDb.media = newMediaSettings;
+
+    await fs.writeFile(LOCAL_DB_PATH, JSON.stringify(currentDb, null, 2), "utf-8");
+    
+    revalidatePath("/");
+    revalidatePath("/apparel-design");
+    revalidatePath("/social-media-design");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Local media settings update failed:", error);
+    throw new Error(`Gagal memperbarui kontak secara lokal: ${error.message}`);
   }
 }
