@@ -38,7 +38,8 @@
     "/img/logo-brand/logo-brand-9.png",
     "/img/logo-brand/logo-brand-6.png",
     "/img/logo-brand/logo-brand-7.png",
-    "/img/logo-brand/logo-brand-11.png"
+    "/img/logo-brand/logo-brand-11.png",
+    "/uploads/1786269319417-logo-tosart-modified.png"
   ],
   "visualImages": [
     "/img/visual/visual-15.png",
@@ -147,10 +148,20 @@
       "badge": "Apparel Design, Branding & Visual Studio",
       "title": "Beyond\nVisuals",
       "subtitle": "Designing visuals that connect culture, identity, and storytelling.",
-      "words": ["culture", "identity", "storytelling"],
+      "words": [
+        "culture",
+        "identity",
+        "storytelling"
+      ],
       "stats": [
-        { "value": "5+", "label": "Years Experience" },
-        { "value": "400+", "label": "Brands Handled" }
+        {
+          "value": "5+",
+          "label": "Years Experience"
+        },
+        {
+          "value": "400+",
+          "label": "Brands Handled"
+        }
       ]
     },
     "whoWeAre": {
