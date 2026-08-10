@@ -17,35 +17,28 @@ export default function Hero({ data }: { data?: any }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
     const currentWord = words[currentWordIndex];
-    
-    const typingSpeed = 120;
-    const deletingSpeed = 70;
-    const pauseBeforeDelete = 2000;
-    const pauseBeforeType = 400;
+    let timer: NodeJS.Timeout;
 
-    const handleType = () => {
-      if (!isDeleting) {
-        setDisplayedText(currentWord.slice(0, displayedText.length + 1));
-        if (displayedText.length + 1 === currentWord.length) {
-          timer = setTimeout(() => setIsDeleting(true), pauseBeforeDelete);
-          return;
-        }
-      } else {
-        setDisplayedText(currentWord.slice(0, displayedText.length - 1));
-        if (displayedText.length === 1) {
-          setIsDeleting(false);
-          setCurrentWordIndex((prev) => (prev + 1) % words.length);
-          timer = setTimeout(() => {}, pauseBeforeType);
-          return;
-        }
-      }
+    if (isDeleting) {
+      timer = setTimeout(() => {
+        setDisplayedText((prev) => prev.slice(0, -1));
+      }, 70);
+    } else {
+      timer = setTimeout(() => {
+        setDisplayedText((prev) => currentWord.slice(0, prev.length + 1));
+      }, 120);
+    }
 
-      timer = setTimeout(handleType, isDeleting ? deletingSpeed : typingSpeed);
-    };
-
-    timer = setTimeout(handleType, displayedText === "" ? pauseBeforeType : 0);
+    if (!isDeleting && displayedText === currentWord) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setIsDeleting(true);
+      }, 2000);
+    } else if (isDeleting && displayedText === "") {
+      setIsDeleting(false);
+      setCurrentWordIndex((prev) => (prev + 1) % words.length);
+    }
 
     return () => clearTimeout(timer);
   }, [displayedText, isDeleting, currentWordIndex, words]);
@@ -68,8 +61,8 @@ export default function Hero({ data }: { data?: any }) {
   return (
     <section className="relative pt-40 pb-20 lg:pt-48 lg:pb-32 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[80vh] text-center">
       {/* Decorative top badge */}
-      <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-base-300/30 border border-base-100/10 backdrop-blur-sm text-xs md:text-sm font-medium tracking-widest uppercase mb-8 shadow-2xl animate-fade-in-up">
-        <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 md:gap-3 md:px-5 md:py-2 rounded-full bg-base-300/30 border border-base-100/10 backdrop-blur-sm text-[10px] sm:text-xs md:text-sm font-medium tracking-widest uppercase mb-8 shadow-2xl animate-fade-in-up">
+        <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary animate-pulse"></span>
         {badge}
       </div>
 

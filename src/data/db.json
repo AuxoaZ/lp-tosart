@@ -77,6 +77,33 @@
     "/img/social/Artboard223.png",
     "/img/social/feed-5.png"
   ],
+  "fashionImages": [
+    "/img/social/feed-1.png",
+    "/img/social/feed-2.png",
+    "/img/social/feed-3.png"
+  ],
+  "fbImages": [
+    "/img/social/Artboard 1.png",
+    "/img/social/Artboard 2.png",
+    "/img/social/Artboard 3.png"
+  ],
+  "corporateImages": [
+    "/img/social/Artboard 4 (1).png",
+    "/img/social/Artboard 4 (2).png",
+    "/img/social/Artboard 5 (2).png"
+  ],
+  "ecommerceImages": [
+    "/img/social/Artboard 7.png",
+    "/img/social/Artboard 7 (1).png",
+    "/img/social/Artboard 10.png"
+  ],
+  "lifestyleImages": [
+    "/img/social/feed-4.png",
+    "/img/social/Artboard11.png",
+    "/img/social/Artboard222.png",
+    "/img/social/Artboard223.png",
+    "/img/social/feed-5.png"
+  ],
   "homeApparelImages": [
     "/img/apparel/509.png",
     "/img/apparel/509-1.png",
@@ -201,7 +228,7 @@
   },
   "media": {
     "whatsapp": "6285904430581",
-    "instagram": "tosart.std",
+    "instagram": "tosa.std",
     "email": "tosart.std@gmail.com"
   }
 }

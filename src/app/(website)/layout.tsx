@@ -11,8 +11,8 @@ export default async function WebsiteLayout({
   const data = await getGalleryData();
   const media = data.media || {
     whatsapp: "6285904430581",
-    instagram: "tosart.std",
-    email: "hello@tosart.studio"
+    instagram: "tosa.std",
+    email: "tosart.std@gmail.com"
   };
 
   return (

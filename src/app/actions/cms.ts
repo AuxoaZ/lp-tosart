@@ -22,6 +22,11 @@ interface GalleryData {
   logoBrandImages: string[];
   visualImages: string[];
   socialImages: string[];
+  fashionImages: string[];
+  fbImages: string[];
+  corporateImages: string[];
+  ecommerceImages: string[];
+  lifestyleImages: string[];
   homeApparelImages: string[];
   homeAccessoriesImages: string[];
   videos: {
@@ -133,6 +138,161 @@ async function pushToGithub(
   return await response.json();
 }
 
+// Helper: Push multiple files to GitHub API in a single atomic commit
+async function pushMultipleToGithub(
+  files: { filePath: string; content: string | Buffer }[],
+  commitMessage = "Update via CMS",
+) {
+  if (!isGithubConfigured())
+    throw new Error("GitHub credentials not configured.");
+
+  // 1. Get reference to head commit of the branch
+  const refUrl = `https://api.github.com/repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}`;
+  const refRes = await fetch(refUrl, {
+    method: "GET",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: "application/vnd.github.v3+json",
+      "Cache-Control": "no-cache",
+    },
+  });
+  if (!refRes.ok) {
+    throw new Error(`Failed to get ref: ${refRes.statusText}`);
+  }
+  const refData = await refRes.json();
+  const latestCommitSha = refData.object.sha;
+
+  // 2. Get tree SHA of the latest commit
+  const commitUrl = `https://api.github.com/repos/${OWNER}/${REPO}/git/commits/${latestCommitSha}`;
+  const commitRes = await fetch(commitUrl, {
+    method: "GET",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: "application/vnd.github.v3+json",
+    },
+  });
+  if (!commitRes.ok) {
+    throw new Error(`Failed to get commit: ${commitRes.statusText}`);
+  }
+  const commitData = await commitRes.json();
+  const latestTreeSha = commitData.tree.sha;
+
+  // 3. Create blob for binary/image files, and collect tree nodes
+  const treeNodes = [];
+  for (const file of files) {
+    const isBinary =
+      file.filePath.endsWith(".png") ||
+      file.filePath.endsWith(".jpg") ||
+      file.filePath.endsWith(".jpeg") ||
+      file.filePath.endsWith(".webp") ||
+      file.filePath.endsWith(".gif") ||
+      file.filePath.endsWith(".ico");
+
+    if (isBinary) {
+      const base64Content =
+        typeof file.content === "string"
+          ? Buffer.from(file.content, "utf-8").toString("base64")
+          : file.content.toString("base64");
+
+      const blobUrl = `https://api.github.com/repos/${OWNER}/${REPO}/git/blobs`;
+      const blobRes = await fetch(blobUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `token ${TOKEN}`,
+          Accept: "application/vnd.github.v3+json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: base64Content,
+          encoding: "base64",
+        }),
+      });
+      if (!blobRes.ok) {
+        throw new Error(`Failed to create blob: ${blobRes.statusText}`);
+      }
+      const blobData = await blobRes.json();
+
+      treeNodes.push({
+        path: file.filePath,
+        mode: "100644",
+        type: "blob",
+        sha: blobData.sha,
+      });
+    } else {
+      const contentStr =
+        typeof file.content === "string"
+          ? file.content
+          : file.content.toString("utf-8");
+
+      treeNodes.push({
+        path: file.filePath,
+        mode: "100644",
+        type: "blob",
+        content: contentStr,
+      });
+    }
+  }
+
+  // 4. Create new tree on top of latestTreeSha
+  const treeUrl = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees`;
+  const treeRes = await fetch(treeUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      base_tree: latestTreeSha,
+      tree: treeNodes,
+    }),
+  });
+  if (!treeRes.ok) {
+    throw new Error(`Failed to create tree: ${treeRes.statusText}`);
+  }
+  const treeData = await treeRes.json();
+
+  // 5. Create new commit
+  const newCommitUrl = `https://api.github.com/repos/${OWNER}/${REPO}/git/commits`;
+  const newCommitRes = await fetch(newCommitUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: commitMessage,
+      tree: treeData.sha,
+      parents: [latestCommitSha],
+    }),
+  });
+  if (!newCommitRes.ok) {
+    throw new Error(`Failed to create commit: ${newCommitRes.statusText}`);
+  }
+  const newCommitData = await newCommitRes.json();
+
+  // 6. Update reference
+  const updateRefUrl = `https://api.github.com/repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}`;
+  const updateRefRes = await fetch(updateRefUrl, {
+    method: "PATCH",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sha: newCommitData.sha,
+      force: false,
+    }),
+  });
+  if (!updateRefRes.ok) {
+    throw new Error(`Failed to update ref: ${updateRefRes.statusText}`);
+  }
+
+  return await updateRefRes.json();
+}
+
 // Helper: Delete file from GitHub API
 async function deleteFromGithub(filePath: string, sha: string) {
   if (!isGithubConfigured())
@@ -238,6 +398,11 @@ export async function getGalleryData(): Promise<GalleryData> {
       logoBrandImages: [],
       visualImages: [],
       socialImages: [],
+      fashionImages: [],
+      fbImages: [],
+      corporateImages: [],
+      ecommerceImages: [],
+      lifestyleImages: [],
       homeApparelImages: [],
       homeAccessoriesImages: [],
       videos: [],
@@ -296,8 +461,8 @@ export async function getGalleryData(): Promise<GalleryData> {
       },
       media: {
         whatsapp: "6285904430581",
-        instagram: "tosart.std",
-        email: "hello@tosart.studio",
+        instagram: "tosa.std",
+        email: "tosart.std@gmail.com",
       },
     };
   }
@@ -395,17 +560,9 @@ export async function uploadImageAction(
 
   if (isGithubConfigured()) {
     try {
-      // 1. Upload file to GitHub repo
-      const existingSha = await getFileSha(fileRepoPath);
       const fileBuffer = Buffer.from(fileBase64, "base64");
-      await pushToGithub(
-        fileRepoPath,
-        fileBuffer,
-        existingSha || undefined,
-        `Upload image ${fileName} via CMS`,
-      );
 
-      // 2. Write copy to local disk so localhost can serve it immediately without git pull
+      // 1. Write copy to local disk so localhost can serve it immediately without git pull
       try {
         await fs.mkdir(UPLOADS_DIR, { recursive: true });
         await fs.writeFile(path.join(UPLOADS_DIR, fileName), fileBuffer);
@@ -413,20 +570,24 @@ export async function uploadImageAction(
         console.warn("Gagal menyimpan salinan lokal gambar:", localErr);
       }
 
-      // 3. Add to db.json
+      // 2. Add to db.json
       const gitData = await fetchFromGithub("src/data/db.json");
       const currentDb = gitData ? gitData.parsed : await getGalleryData();
-      const dbSha = gitData ? gitData.sha : undefined;
 
       if (!currentDb[category].includes(relativePublicPath)) {
         currentDb[category].push(relativePublicPath);
       }
 
-      await pushToGithub(
-        "src/data/db.json",
-        JSON.stringify(currentDb, null, 2),
-        dbSha,
-        `Add uploaded image path to ${category}`,
+      // 3. Upload image and update db.json in a single Git commit!
+      await pushMultipleToGithub(
+        [
+          { filePath: fileRepoPath, content: fileBuffer },
+          {
+            filePath: "src/data/db.json",
+            content: JSON.stringify(currentDb, null, 2),
+          },
+        ],
+        `Upload image ${fileName} and update ${category} database`,
       );
 
       revalidatePath("/");

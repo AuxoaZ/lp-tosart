@@ -1,13 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FiInstagram, FiTwitter, FiMail } from "react-icons/fi";
+import { FiInstagram, FiMail, FiPhone } from "react-icons/fi";
 
 export default function Footer({
   media,
 }: {
   media?: { whatsapp: string; instagram: string; email: string };
 }) {
-  const emailAddress = media?.email || "hello@tosart.studio";
+  const emailAddress = media?.email || "tosart.std@gmail.com";
+  const whatsappNumber = media?.whatsapp || "6285904430581";
+  const instagramUsername = media?.instagram || "tosa.std";
+
+  const whatsappNumberDisplay = "+62 85904430581";
 
   return (
     <footer
@@ -77,10 +81,43 @@ export default function Footer({
 
         <div>
           <h4 className="font-syne font-bold mb-6">Contact Us</h4>
-          <p className="text-sm text-base-content/70 mb-4">
+          <p className="text-sm text-base-content/70 mb-6">
             Ready to start your visual project? Let&apos;s discuss your ideas
             with us.
           </p>
+          <ul className="space-y-3.5 text-sm text-base-content/70">
+            <li className="flex items-center gap-3 group">
+              <FiMail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+              <a
+                href={`mailto:${emailAddress}`}
+                className="hover:text-primary transition-colors"
+              >
+                {emailAddress}
+              </a>
+            </li>
+            <li className="flex items-center gap-3 group">
+              <FiPhone className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+              <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                {whatsappNumberDisplay}
+              </a>
+            </li>
+            <li className="flex items-center gap-3 group">
+              <FiInstagram className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+              <a
+                href={`https://instagram.com/${instagramUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                @{instagramUsername}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
 

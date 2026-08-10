@@ -1,38 +1,53 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  FiLock, 
-  FiLogOut, 
-  FiTrash2, 
-  FiArrowLeft, 
-  FiArrowRight, 
-  FiUploadCloud, 
-  FiPlus, 
-  FiSave, 
-  FiCheckCircle, 
-  FiAlertCircle, 
-  FiArrowUp, 
+import {
+  FiLock,
+  FiLogOut,
+  FiTrash2,
+  FiArrowLeft,
+  FiArrowRight,
+  FiUploadCloud,
+  FiPlus,
+  FiSave,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiArrowUp,
   FiArrowDown,
   FiFileText,
   FiVideo,
   FiInstagram,
-  FiLayers
+  FiLayers,
+  FiChevronDown,
+  FiChevronRight,
 } from "react-icons/fi";
-import { 
-  authenticateAdmin, 
-  checkAdminSession, 
-  logoutAdmin, 
-  getGalleryData, 
-  updateGalleryData, 
-  uploadImageAction, 
+import {
+  authenticateAdmin,
+  checkAdminSession,
+  logoutAdmin,
+  getGalleryData,
+  updateGalleryData,
+  uploadImageAction,
   deleteImageAction,
   updateVideosAction,
   updateTypewritingAction,
-  updateMediaAction
+  updateMediaAction,
 } from "@/app/actions/cms";
 
-type TabType = "apparel" | "accessories" | "logo-brand" | "visuals" | "social" | "videos" | "typewriting" | "media";
+type TabType =
+  | "apparel"
+  | "accessories"
+  | "logo-brand"
+  | "visuals"
+  | "social"
+  | "fashion"
+  | "fb"
+  | "corporate"
+  | "ecommerce"
+  | "lifestyle"
+  | "videos"
+  | "typewriting"
+  | "media";
 
 interface VideoItem {
   id: string;
@@ -51,10 +66,37 @@ export default function AdminPage() {
 
   // Data states
   const [activeTab, setActiveTab] = useState<TabType>("apparel");
+  const [apparelDropdownOpen, setApparelDropdownOpen] = useState(false);
+  const [socialDropdownOpen, setSocialDropdownOpen] = useState(false);
+
+  // Auto-expand dropdowns based on activeTab
+  useEffect(() => {
+    if (
+      ["apparel", "accessories", "logo-brand", "visuals"].includes(activeTab)
+    ) {
+      setApparelDropdownOpen(true);
+    }
+    if (
+      [
+        "social",
+        "fashion",
+        "fb",
+        "corporate",
+        "ecommerce",
+        "lifestyle",
+      ].includes(activeTab)
+    ) {
+      setSocialDropdownOpen(true);
+    }
+  }, [activeTab]);
+
   const [loadingData, setLoadingData] = useState(false);
   const [savingData, setSavingData] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   // Gallery arrays
   const [apparelImages, setApparelImages] = useState<string[]>([]);
@@ -62,16 +104,34 @@ export default function AdminPage() {
   const [logoBrandImages, setLogoBrandImages] = useState<string[]>([]);
   const [visualImages, setVisualImages] = useState<string[]>([]);
   const [socialImages, setSocialImages] = useState<string[]>([]);
+  const [fashionImages, setFashionImages] = useState<string[]>([]);
+  const [fbImages, setFbImages] = useState<string[]>([]);
+  const [corporateImages, setCorporateImages] = useState<string[]>([]);
+  const [ecommerceImages, setEcommerceImages] = useState<string[]>([]);
+  const [lifestyleImages, setLifestyleImages] = useState<string[]>([]);
   const [homeApparel, setHomeApparel] = useState<string[]>([]);
   const [homeAccessories, setHomeAccessories] = useState<string[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [copywriting, setCopywriting] = useState<any>({
-    hero: { badge: "", title: "", subtitle: "", words: [], stats: [{ value: "", label: "" }, { value: "", label: "" }] },
+    hero: {
+      badge: "",
+      title: "",
+      subtitle: "",
+      words: [],
+      stats: [
+        { value: "", label: "" },
+        { value: "", label: "" },
+      ],
+    },
     whoWeAre: { title: "", paragraphs: [] },
-    services: { title: "", subtitle: "", items: [] }
+    services: { title: "", subtitle: "", items: [] },
   });
   const [newWord, setNewWord] = useState("");
-  const [mediaSettings, setMediaSettings] = useState({ whatsapp: "", instagram: "", email: "" });
+  const [mediaSettings, setMediaSettings] = useState({
+    whatsapp: "",
+    instagram: "",
+    email: "",
+  });
 
   // Video Form states
   const [newVideoTitle, setNewVideoTitle] = useState("");
@@ -109,15 +169,33 @@ export default function AdminPage() {
       setLogoBrandImages(data.logoBrandImages || []);
       setVisualImages(data.visualImages || []);
       setSocialImages(data.socialImages || []);
+      setFashionImages(data.fashionImages || []);
+      setFbImages(data.fbImages || []);
+      setCorporateImages(data.corporateImages || []);
+      setEcommerceImages(data.ecommerceImages || []);
+      setLifestyleImages(data.lifestyleImages || []);
       setHomeApparel(data.homeApparelImages || []);
       setHomeAccessories(data.homeAccessoriesImages || []);
       setVideos(data.videos || []);
-      setCopywriting(data.typewriting || {
-        hero: { badge: "", title: "", subtitle: "", words: [], stats: [{ value: "", label: "" }, { value: "", label: "" }] },
-        whoWeAre: { title: "", paragraphs: [] },
-        services: { title: "", subtitle: "", items: [] }
-      });
-      setMediaSettings(data.media || { whatsapp: "", instagram: "", email: "" });
+      setCopywriting(
+        data.typewriting || {
+          hero: {
+            badge: "",
+            title: "",
+            subtitle: "",
+            words: [],
+            stats: [
+              { value: "", label: "" },
+              { value: "", label: "" },
+            ],
+          },
+          whoWeAre: { title: "", paragraphs: [] },
+          services: { title: "", subtitle: "", items: [] },
+        },
+      );
+      setMediaSettings(
+        data.media || { whatsapp: "", instagram: "", email: "" },
+      );
     } catch (err) {
       showToast("Gagal memuat data!", "error");
     } finally {
@@ -159,27 +237,39 @@ export default function AdminPage() {
   };
 
   // Reorder images
-  const moveImage = (images: string[], setImages: React.Dispatch<React.SetStateAction<string[]>>, index: number, direction: "left" | "right") => {
+  const moveImage = (
+    images: string[],
+    setImages: React.Dispatch<React.SetStateAction<string[]>>,
+    index: number,
+    direction: "left" | "right",
+  ) => {
     const newImages = [...images];
     const targetIndex = direction === "left" ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= newImages.length) return;
-    
+
     // Swap
     const temp = newImages[index];
     newImages[index] = newImages[targetIndex];
     newImages[targetIndex] = temp;
-    
+
     setImages(newImages);
   };
 
   // Toggle Pinned status for Home page (must be exactly 12)
-  const toggleHomePin = (src: string, pinnedList: string[], setPinnedList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const toggleHomePin = (
+    src: string,
+    pinnedList: string[],
+    setPinnedList: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
     const isPinned = pinnedList.includes(src);
     if (isPinned) {
-      setPinnedList(pinnedList.filter(item => item !== src));
+      setPinnedList(pinnedList.filter((item) => item !== src));
     } else {
       if (pinnedList.length >= 12) {
-        showToast("Sudah mencapai batas maksimal 12 gambar untuk Beranda!", "error");
+        showToast(
+          "Sudah mencapai batas maksimal 12 gambar untuk Beranda!",
+          "error",
+        );
         return;
       }
       setPinnedList([...pinnedList, src]);
@@ -187,7 +277,10 @@ export default function AdminPage() {
   };
 
   // Handle image upload with 2MB validation
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, category: keyof typeof categoryMapping) => {
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    category: keyof typeof categoryMapping,
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -204,17 +297,32 @@ export default function AdminPage() {
       reader.onloadend = async () => {
         const base64String = (reader.result as string).split(",")[1];
         const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-        
+
         const key = categoryMapping[category];
         const res = await uploadImageAction(key, fileName, base64String);
 
         if (res.success && res.imagePath) {
           // Append locally first
-          if (key === "apparelImages") setApparelImages(prev => [...prev, res.imagePath!]);
-          else if (key === "accessoriesImages") setAccessoriesImages(prev => [...prev, res.imagePath!]);
-          else if (key === "logoBrandImages") setLogoBrandImages(prev => [...prev, res.imagePath!]);
-          else if (key === "visualImages") setVisualImages(prev => [...prev, res.imagePath!]);
-          else if (key === "socialImages") setSocialImages(prev => [...prev, res.imagePath!]);
+          if (key === "apparelImages")
+            setApparelImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "accessoriesImages")
+            setAccessoriesImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "logoBrandImages")
+            setLogoBrandImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "visualImages")
+            setVisualImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "socialImages")
+            setSocialImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "fashionImages")
+            setFashionImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "fbImages")
+            setFbImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "corporateImages")
+            setCorporateImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "ecommerceImages")
+            setEcommerceImages((prev) => [...prev, res.imagePath!]);
+          else if (key === "lifestyleImages")
+            setLifestyleImages((prev) => [...prev, res.imagePath!]);
 
           showToast("Gambar berhasil diunggah!", "success");
           // Re-load data from git/local to ensure fully in sync
@@ -232,9 +340,17 @@ export default function AdminPage() {
   };
 
   // Delete image
-  const handleDeleteImage = async (imagePath: string, key: keyof typeof categoryMapping) => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus gambar ini? Tindakan ini permanen.")) return;
-    
+  const handleDeleteImage = async (
+    imagePath: string,
+    key: keyof typeof categoryMapping,
+  ) => {
+    if (
+      !window.confirm(
+        "Apakah Anda yakin ingin menghapus gambar ini? Tindakan ini permanen.",
+      )
+    )
+      return;
+
     setSavingData(true);
     try {
       const res = await deleteImageAction(categoryMapping[key], imagePath);
@@ -255,24 +371,50 @@ export default function AdminPage() {
     try {
       if (tab === "apparel") {
         if (homeApparel.length !== 12) {
-          showToast("Gagal! Anda harus memilih tepat 12 gambar untuk galeri Apparel Beranda.", "error");
+          showToast(
+            "Gagal! Anda harus memilih tepat 12 gambar untuk galeri Apparel Beranda.",
+            "error",
+          );
           setSavingData(false);
           return;
         }
-        await updateGalleryData("apparelImages", apparelImages, homeApparel, undefined);
+        await updateGalleryData(
+          "apparelImages",
+          apparelImages,
+          homeApparel,
+          undefined,
+        );
       } else if (tab === "accessories") {
         if (homeAccessories.length !== 12) {
-          showToast("Gagal! Anda harus memilih tepat 12 gambar untuk galeri Accessories Beranda.", "error");
+          showToast(
+            "Gagal! Anda harus memilih tepat 12 gambar untuk galeri Accessories Beranda.",
+            "error",
+          );
           setSavingData(false);
           return;
         }
-        await updateGalleryData("accessoriesImages", accessoriesImages, undefined, homeAccessories);
+        await updateGalleryData(
+          "accessoriesImages",
+          accessoriesImages,
+          undefined,
+          homeAccessories,
+        );
       } else if (tab === "logo-brand") {
         await updateGalleryData("logoBrandImages", logoBrandImages);
       } else if (tab === "visuals") {
         await updateGalleryData("visualImages", visualImages);
       } else if (tab === "social") {
         await updateGalleryData("socialImages", socialImages);
+      } else if (tab === "fashion") {
+        await updateGalleryData("fashionImages", fashionImages);
+      } else if (tab === "fb") {
+        await updateGalleryData("fbImages", fbImages);
+      } else if (tab === "corporate") {
+        await updateGalleryData("corporateImages", corporateImages);
+      } else if (tab === "ecommerce") {
+        await updateGalleryData("ecommerceImages", ecommerceImages);
+      } else if (tab === "lifestyle") {
+        await updateGalleryData("lifestyleImages", lifestyleImages);
       }
 
       showToast("Perubahan berhasil disimpan dan disinkronkan!", "success");
@@ -300,7 +442,7 @@ export default function AdminPage() {
         embedUrl: newVideoUrl,
         category: newVideoCategory,
       };
-      
+
       const updatedVideos = [...videos, newVideo];
       const res = await updateVideosAction(updatedVideos);
       if (res.success) {
@@ -318,10 +460,10 @@ export default function AdminPage() {
 
   const handleDeleteVideo = async (id: string) => {
     if (!window.confirm("Yakin ingin menghapus video ini?")) return;
-    
+
     setSavingData(true);
     try {
-      const updatedVideos = videos.filter(v => v.id !== id);
+      const updatedVideos = videos.filter((v) => v.id !== id);
       const res = await updateVideosAction(updatedVideos);
       if (res.success) {
         setVideos(updatedVideos);
@@ -367,8 +509,8 @@ export default function AdminPage() {
       ...prev,
       hero: {
         ...prev.hero,
-        words: [...(prev.hero?.words || []), newWord.trim()]
-      }
+        words: [...(prev.hero?.words || []), newWord.trim()],
+      },
     }));
     setNewWord("");
   };
@@ -378,8 +520,10 @@ export default function AdminPage() {
       ...prev,
       hero: {
         ...prev.hero,
-        words: (prev.hero?.words || []).filter((_: any, idx: number) => idx !== index)
-      }
+        words: (prev.hero?.words || []).filter(
+          (_: any, idx: number) => idx !== index,
+        ),
+      },
     }));
   };
 
@@ -392,7 +536,7 @@ export default function AdminPage() {
     words[targetIndex] = temp;
     setCopywriting((prev: any) => ({
       ...prev,
-      hero: { ...prev.hero, words }
+      hero: { ...prev.hero, words },
     }));
   };
 
@@ -413,7 +557,11 @@ export default function AdminPage() {
 
   // Media handlers
   const saveMediaChanges = async () => {
-    if (!mediaSettings.whatsapp || !mediaSettings.instagram || !mediaSettings.email) {
+    if (
+      !mediaSettings.whatsapp ||
+      !mediaSettings.instagram ||
+      !mediaSettings.email
+    ) {
       showToast("Semua bidang kontak wajib diisi!", "error");
       return;
     }
@@ -437,28 +585,65 @@ export default function AdminPage() {
     "logo-brand": "logoBrandImages",
     visuals: "visualImages",
     social: "socialImages",
+    fashion: "fashionImages",
+    fb: "fbImages",
+    corporate: "corporateImages",
+    ecommerce: "ecommerceImages",
+    lifestyle: "lifestyleImages",
   } as const;
 
   // Helper getters/setters inside component body to access state directly
   const getCategoryImages = (tab: TabType): string[] => {
     switch (tab) {
-      case "apparel": return apparelImages;
-      case "accessories": return accessoriesImages;
-      case "logo-brand": return logoBrandImages;
-      case "visuals": return visualImages;
-      case "social": return socialImages;
-      default: return [];
+      case "apparel":
+        return apparelImages;
+      case "accessories":
+        return accessoriesImages;
+      case "logo-brand":
+        return logoBrandImages;
+      case "visuals":
+        return visualImages;
+      case "social":
+        return socialImages;
+      case "fashion":
+        return fashionImages;
+      case "fb":
+        return fbImages;
+      case "corporate":
+        return corporateImages;
+      case "ecommerce":
+        return ecommerceImages;
+      case "lifestyle":
+        return lifestyleImages;
+      default:
+        return [];
     }
   };
 
   const getImageSetter = (tab: TabType) => {
     switch (tab) {
-      case "apparel": return setApparelImages;
-      case "accessories": return setAccessoriesImages;
-      case "logo-brand": return setLogoBrandImages;
-      case "visuals": return setVisualImages;
-      case "social": return setSocialImages;
-      default: return () => {};
+      case "apparel":
+        return setApparelImages;
+      case "accessories":
+        return setAccessoriesImages;
+      case "logo-brand":
+        return setLogoBrandImages;
+      case "visuals":
+        return setVisualImages;
+      case "social":
+        return setSocialImages;
+      case "fashion":
+        return setFashionImages;
+      case "fb":
+        return setFbImages;
+      case "corporate":
+        return setCorporateImages;
+      case "ecommerce":
+        return setEcommerceImages;
+      case "lifestyle":
+        return setLifestyleImages;
+      default:
+        return () => {};
     }
   };
 
@@ -479,7 +664,8 @@ export default function AdminPage() {
   if (checkingSession) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center text-white/50 font-light">
-        <span className="loading loading-spinner loading-md mr-3"></span> Memverifikasi sesi...
+        <span className="loading loading-spinner loading-md mr-3"></span>{" "}
+        Memverifikasi sesi...
       </div>
     );
   }
@@ -490,8 +676,8 @@ export default function AdminPage() {
       <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 relative overflow-hidden">
         {/* Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-87.5 h-87.5 bg-primary/20 rounded-full blur-3xl z-0" />
-        
-        <form 
+
+        <form
           onSubmit={handleLogin}
           className="relative z-10 w-full max-w-md bg-base-300/40 backdrop-blur-2xl border border-white/10 rounded-4xl p-8 sm:p-10 shadow-2xl flex flex-col space-y-6"
         >
@@ -515,9 +701,11 @@ export default function AdminPage() {
           )}
 
           <div className="space-y-2">
-            <label className="text-xs uppercase tracking-widest font-semibold text-white/50">Password</label>
-            <input 
-              type="password" 
+            <label className="text-xs uppercase tracking-widest font-semibold text-white/50">
+              Password
+            </label>
+            <input
+              type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -526,14 +714,16 @@ export default function AdminPage() {
             />
           </div>
 
-          <button 
+          <button
             type="submit"
             disabled={authLoading}
             className="btn btn-primary w-full rounded-xl py-3 font-semibold shadow-lg shadow-primary/25 cursor-pointer"
           >
             {authLoading ? (
               <span className="loading loading-spinner loading-sm"></span>
-            ) : "Masuk ke Dashboard"}
+            ) : (
+              "Masuk ke Dashboard"
+            )}
           </button>
         </form>
       </div>
@@ -545,12 +735,18 @@ export default function AdminPage() {
     <div className="min-h-screen bg-black text-white pt-28 pb-16 relative">
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-24 right-6 z-50 alert shadow-2xl border flex gap-3 p-4 rounded-2xl max-w-sm transition-all duration-300 ${
-          toast.type === "success" 
-            ? "alert-success bg-green-950/60 border-green-500/30 text-green-200" 
-            : "alert-error bg-red-950/60 border-red-500/30 text-red-200"
-        }`}>
-          {toast.type === "success" ? <FiCheckCircle className="w-5 h-5" /> : <FiAlertCircle className="w-5 h-5" />}
+        <div
+          className={`fixed top-24 right-6 z-50 alert shadow-2xl border flex gap-3 p-4 rounded-2xl max-w-sm transition-all duration-300 ${
+            toast.type === "success"
+              ? "alert-success bg-green-950/60 border-green-500/30 text-green-200"
+              : "alert-error bg-red-950/60 border-red-500/30 text-red-200"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <FiCheckCircle className="w-5 h-5" />
+          ) : (
+            <FiAlertCircle className="w-5 h-5" />
+          )}
           <span className="text-sm font-semibold">{toast.message}</span>
         </div>
       )}
@@ -562,11 +758,12 @@ export default function AdminPage() {
             CMS Dashboard
           </h1>
           <p className="text-sm text-base-content/60 font-light mt-2">
-            Kelola konten, galeri portfolio, dan aset media website secara dinamis.
+            Kelola konten, galeri portfolio, dan aset media website secara
+            dinamis.
           </p>
         </div>
 
-        <button 
+        <button
           onClick={handleLogout}
           className="btn btn-outline border-white/10 text-white/70 hover:bg-white/5 hover:text-white rounded-xl gap-2 cursor-pointer"
         >
@@ -576,188 +773,354 @@ export default function AdminPage() {
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
         {/* Navigation Tabs */}
-        <div className="lg:col-span-3 bg-base-300/30 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col gap-1.5 select-none">
-          <p className="text-xs uppercase tracking-widest font-bold text-white/30 px-3 mb-2">Kategori Konten</p>
-          
-          <TabButton active={activeTab === "apparel"} icon={<FiLayers />} label="Apparel Gallery" onClick={() => setActiveTab("apparel")} />
-          <TabButton active={activeTab === "accessories"} icon={<FiLayers />} label="Accessories Gallery" onClick={() => setActiveTab("accessories")} />
-          <TabButton active={activeTab === "logo-brand"} icon={<FiFileText />} label="Logo & Brand" onClick={() => setActiveTab("logo-brand")} />
-          <TabButton active={activeTab === "visuals"} icon={<FiFileText />} label="Visual Designs" onClick={() => setActiveTab("visuals")} />
-          <TabButton active={activeTab === "social"} icon={<FiInstagram />} label="Social Media" onClick={() => setActiveTab("social")} />
-          <TabButton active={activeTab === "videos"} icon={<FiVideo />} label="Video Marketing" onClick={() => setActiveTab("videos")} />
-          <TabButton active={activeTab === "typewriting"} icon={<FiFileText />} label="Typewriting Text" onClick={() => setActiveTab("typewriting")} />
-          <TabButton active={activeTab === "media"} icon={<FiLayers />} label="Media & Social" onClick={() => setActiveTab("media")} />
+        <div className="lg:col-span-3 bg-base-300/30 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col gap-2.5 select-none">
+          <p className="text-xs uppercase tracking-widest font-bold text-white/30 px-3 mb-2">
+            Kategori Konten
+          </p>
+
+          {/* Apparel (Dropdown) */}
+          <div className="flex flex-col gap-1">
+            <DropdownHeader
+              label="Apparel"
+              icon={<FiLayers />}
+              isOpen={apparelDropdownOpen}
+              onToggle={() => setApparelDropdownOpen(!apparelDropdownOpen)}
+              isActive={[
+                "apparel",
+                "accessories",
+                "logo-brand",
+                "visuals",
+              ].includes(activeTab)}
+            />
+            {apparelDropdownOpen && (
+              <div className="pl-3 flex flex-col gap-1 mt-1 border-l border-white/15 ml-6.5">
+                <SubTabButton
+                  active={activeTab === "apparel"}
+                  label="Apparel Gallery"
+                  onClick={() => setActiveTab("apparel")}
+                />
+                <SubTabButton
+                  active={activeTab === "accessories"}
+                  label="Accessories Gallery"
+                  onClick={() => setActiveTab("accessories")}
+                />
+                <SubTabButton
+                  active={activeTab === "logo-brand"}
+                  label="Logo & Brand"
+                  onClick={() => setActiveTab("logo-brand")}
+                />
+                <SubTabButton
+                  active={activeTab === "visuals"}
+                  label="Visual Designs"
+                  onClick={() => setActiveTab("visuals")}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Social Media Design (Dropdown) */}
+          <div className="flex flex-col gap-1">
+            <DropdownHeader
+              label="Social Media Design"
+              icon={<FiInstagram />}
+              isOpen={socialDropdownOpen}
+              onToggle={() => setSocialDropdownOpen(!socialDropdownOpen)}
+              isActive={[
+                "social",
+                "fashion",
+                "fb",
+                "corporate",
+                "ecommerce",
+                "lifestyle",
+              ].includes(activeTab)}
+            />
+            {socialDropdownOpen && (
+              <div className="pl-3 flex flex-col gap-1 mt-1 border-l border-white/15 ml-6.5">
+                <SubTabButton
+                  active={activeTab === "social"}
+                  label="All"
+                  onClick={() => setActiveTab("social")}
+                />
+                <SubTabButton
+                  active={activeTab === "fashion"}
+                  label="Fashion"
+                  onClick={() => setActiveTab("fashion")}
+                />
+                <SubTabButton
+                  active={activeTab === "fb"}
+                  label="F&B"
+                  onClick={() => setActiveTab("fb")}
+                />
+                <SubTabButton
+                  active={activeTab === "corporate"}
+                  label="Corporate"
+                  onClick={() => setActiveTab("corporate")}
+                />
+                <SubTabButton
+                  active={activeTab === "ecommerce"}
+                  label="E-Commerce"
+                  onClick={() => setActiveTab("ecommerce")}
+                />
+                <SubTabButton
+                  active={activeTab === "lifestyle"}
+                  label="Lifestyle"
+                  onClick={() => setActiveTab("lifestyle")}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Video Marketing */}
+          <TabButton
+            active={activeTab === "videos"}
+            icon={<FiVideo />}
+            label="Video Marketing"
+            onClick={() => setActiveTab("videos")}
+          />
+
+          {/* Typewriting Text */}
+          <TabButton
+            active={activeTab === "typewriting"}
+            icon={<FiFileText />}
+            label="Typewriting Text"
+            onClick={() => setActiveTab("typewriting")}
+          />
+
+          {/* Media & Social */}
+          <TabButton
+            active={activeTab === "media"}
+            icon={<FiLayers />}
+            label="Media & Social"
+            onClick={() => setActiveTab("media")}
+          />
         </div>
 
         {/* Content Area */}
         <div className="lg:col-span-9 bg-base-300/20 backdrop-blur-sm border border-white/5 rounded-3xl p-6 sm:p-8 min-h-125">
-          
           {loadingData ? (
             <div className="flex flex-col items-center justify-center py-20 text-white/40">
               <span className="loading loading-spinner loading-lg mb-4 text-primary"></span>
-              <p className="text-sm font-medium">Memuat data dari database...</p>
+              <p className="text-sm font-medium">
+                Memuat data dari database...
+              </p>
             </div>
           ) : (
             <>
               {/* IMAGE CATEGORIES EDITOR */}
-              {activeTab !== "videos" && activeTab !== "typewriting" && activeTab !== "media" && (
-                <div className="space-y-6">
-                  {/* Category Header */}
-                  <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                    <div>
-                      <h2 className="text-2xl font-syne font-bold uppercase text-white flex items-center gap-2">
-                        {activeTab === "apparel" && "Apparel Design Gallery"}
-                        {activeTab === "accessories" && "Accessories Gallery"}
-                        {activeTab === "logo-brand" && "Logo & Brand Gallery"}
-                        {activeTab === "visuals" && "Visual Designs"}
-                        {activeTab === "social" && "Social Media Graphics"}
-                      </h2>
-                      <p className="text-xs text-white/50 font-light mt-1">
-                        Seret/Pindahkan urutan gambar, hapus gambar, atau unggah gambar baru ke folder repo.
-                      </p>
-                    </div>
-
-                    {/* Action Save Button */}
-                    <button 
-                      onClick={() => saveCategoryChanges(activeTab)}
-                      disabled={savingData}
-                      className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
-                    >
-                      {savingData ? <span className="loading loading-spinner loading-sm"></span> : <FiSave className="w-4 h-4" />}
-                      Simpan Urutan & Pin
-                    </button>
-                  </div>
-
-                  {/* Home Pin Validation Banner (For Apparel & Accessories) */}
-                  {(activeTab === "apparel" || activeTab === "accessories") && (
-                    <div className={`alert text-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-xl border ${
-                      (activeTab === "apparel" ? homeApparel.length : homeAccessories.length) === 12
-                        ? "bg-green-950/20 border-green-500/30 text-green-200"
-                        : "bg-yellow-950/20 border-yellow-500/30 text-yellow-200"
-                    }`}>
-                      <div className="flex items-center gap-2">
-                        <FiAlertCircle className="w-5 h-5 shrink-0" />
-                        <div>
-                          <strong className="font-semibold block">Dinamis Gambar Beranda (Home)</strong>
-                          <span className="text-xs text-white/60">
-                            Pilih/Pin tepat 12 gambar dari galeri di bawah untuk ditampilkan di halaman Beranda.
-                          </span>
-                        </div>
+              {activeTab !== "videos" &&
+                activeTab !== "typewriting" &&
+                activeTab !== "media" && (
+                  <div className="space-y-6">
+                    {/* Category Header */}
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                      <div>
+                        <h2 className="text-2xl font-syne font-bold uppercase text-white flex items-center gap-2">
+                          {activeTab === "apparel" && "Apparel Design Gallery"}
+                          {activeTab === "accessories" && "Accessories Gallery"}
+                          {activeTab === "logo-brand" && "Logo & Brand Gallery"}
+                          {activeTab === "visuals" && "Visual Designs"}
+                          {activeTab === "social" &&
+                            "Social Media Graphics (Legacy)"}
+                          {activeTab === "fashion" && "Social Media: Fashion"}
+                          {activeTab === "fb" && "Social Media: F&B"}
+                          {activeTab === "corporate" &&
+                            "Social Media: Corporate"}
+                          {activeTab === "ecommerce" &&
+                            "Social Media: E-Commerce"}
+                          {activeTab === "lifestyle" &&
+                            "Social Media: Lifestyle"}
+                        </h2>
+                        <p className="text-xs text-white/50 font-light mt-1">
+                          Seret/Pindahkan urutan gambar, hapus gambar, atau
+                          unggah gambar baru ke folder repo.
+                        </p>
                       </div>
-                      <span className="text-sm font-bold bg-white/10 px-4 py-1.5 rounded-full select-none">
-                        Terpilih: {activeTab === "apparel" ? homeApparel.length : homeAccessories.length} / 12
-                      </span>
+
+                      {/* Action Save Button */}
+                      <button
+                        onClick={() => saveCategoryChanges(activeTab)}
+                        disabled={savingData}
+                        className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
+                      >
+                        {savingData ? (
+                          <span className="loading loading-spinner loading-sm"></span>
+                        ) : (
+                          <FiSave className="w-4 h-4" />
+                        )}
+                        Simpan Urutan & Pin
+                      </button>
                     </div>
-                  )}
 
-                  {/* Grid Container */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 mt-6">
-                    {/* Add Image Upload Card */}
-                    <label className={`border-2 border-dashed border-white/10 hover:border-primary/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors aspect-square relative ${
-                      uploading ? "pointer-events-none bg-white/5" : "hover:bg-white/5"
-                    }`}>
-                      <input 
-                        type="file" 
-                        accept="image/*"
-                        onChange={(e) => handleImageUpload(e, activeTab)}
-                        className="hidden"
-                      />
-                      {uploading ? (
-                        <>
-                          <span className="loading loading-spinner loading-md text-primary mb-2"></span>
-                          <span className="text-xs font-semibold text-primary">Mengunggah...</span>
-                        </>
-                      ) : (
-                        <>
-                          <FiUploadCloud className="w-8 h-8 text-white/40 mb-2" />
-                          <span className="text-sm font-bold text-white/80">Unggah Gambar</span>
-                          <span className="text-[10px] text-white/40 mt-1">Maksimal 2 MB</span>
-                        </>
-                      )}
-                    </label>
-
-                    {/* Gallery Items */}
-                    {getCategoryImages(activeTab).map((src, index) => {
-                      const isPinned = isImagePinned(src, activeTab);
-                      const imagesList = getCategoryImages(activeTab);
-                      return (
-                        <div 
-                          key={index} 
-                          className="group relative border border-white/5 rounded-2xl overflow-hidden aspect-square bg-base-300 flex flex-col justify-end shadow-md transition-transform duration-300 hover:scale-[1.02]"
-                        >
-                          {/* Image preview */}
-                          <img 
-                            src={src} 
-                            alt="Gallery item"
-                            className="absolute inset-0 w-full h-full object-cover object-center z-0" 
-                          />
-                          
-                          {/* Overlay Gradient on Hover */}
-                          <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20 opacity-90 group-hover:opacity-100 transition-opacity z-10 p-3 flex flex-col justify-between" />
-
-                          {/* Pinned Ribbon Badge (Apparel & Accessories only) */}
-                          {(activeTab === "apparel" || activeTab === "accessories") && isPinned && (
-                            <span className="absolute top-2 left-2 z-20 badge badge-primary text-[10px] uppercase font-bold py-2.5 rounded-lg select-none">
-                              Beranda (Home)
+                    {/* Home Pin Validation Banner (For Apparel & Accessories) */}
+                    {(activeTab === "apparel" ||
+                      activeTab === "accessories") && (
+                      <div
+                        className={`alert text-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-xl border ${
+                          (activeTab === "apparel"
+                            ? homeApparel.length
+                            : homeAccessories.length) === 12
+                            ? "bg-green-950/20 border-green-500/30 text-green-200"
+                            : "bg-yellow-950/20 border-yellow-500/30 text-yellow-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <FiAlertCircle className="w-5 h-5 shrink-0" />
+                          <div>
+                            <strong className="font-semibold block">
+                              Dinamis Gambar Beranda (Home)
+                            </strong>
+                            <span className="text-xs text-white/60">
+                              Pilih/Pin tepat 12 gambar dari galeri di bawah
+                              untuk ditampilkan di halaman Beranda.
                             </span>
-                          )}
-
-                          {/* Action top right */}
-                          <button
-                            onClick={() => handleDeleteImage(src, activeTab)}
-                            className="absolute top-2 right-2 z-20 btn btn-circle btn-sm bg-red-950/70 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white"
-                            title="Hapus gambar"
-                          >
-                            <FiTrash2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Controls Footer Overlay */}
-                          <div className="relative z-20 p-2 sm:p-3 space-y-2 select-none">
-                            {/* Pin Toggle checkbox (for Apparel & Accessories) */}
-                            {(activeTab === "apparel" || activeTab === "accessories") && (
-                              <button
-                                onClick={() => handlePinToggle(src, activeTab)}
-                                className={`w-full text-xs font-semibold py-1.5 rounded-lg border transition-all cursor-pointer ${
-                                  isPinned 
-                                    ? "bg-primary border-primary text-white" 
-                                    : "bg-black/40 border-white/10 text-white/60 hover:border-white/20 hover:text-white"
-                                }`}
-                              >
-                                {isPinned ? "Lepas Pin Beranda" : "Pin ke Beranda"}
-                              </button>
-                            )}
-
-                            {/* Navigation order triggers */}
-                            <div className="flex justify-between items-center gap-1.5">
-                              <button
-                                onClick={() => moveImage(imagesList, getImageSetter(activeTab), index, "left")}
-                                disabled={index === 0}
-                                className="btn btn-square btn-xs bg-black/60 border border-white/10 text-white disabled:opacity-30 disabled:pointer-events-none hover:bg-white/10"
-                                title="Geser Kiri"
-                              >
-                                <FiArrowLeft className="w-3 h-3" />
-                              </button>
-                              <span className="text-[10px] text-white/50 font-bold uppercase tracking-widest">
-                                Pos: {index + 1}
-                              </span>
-                              <button
-                                onClick={() => moveImage(imagesList, getImageSetter(activeTab), index, "right")}
-                                disabled={index === imagesList.length - 1}
-                                className="btn btn-square btn-xs bg-black/60 border border-white/10 text-white disabled:opacity-30 disabled:pointer-events-none hover:bg-white/10"
-                                title="Geser Kanan"
-                              >
-                                <FiArrowRight className="w-3 h-3" />
-                              </button>
-                            </div>
                           </div>
                         </div>
-                      );
-                    })}
+                        <span className="text-sm font-bold bg-white/10 px-4 py-1.5 rounded-full select-none">
+                          Terpilih:{" "}
+                          {activeTab === "apparel"
+                            ? homeApparel.length
+                            : homeAccessories.length}{" "}
+                          / 12
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Grid Container */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 mt-6">
+                      {/* Add Image Upload Card */}
+                      <label
+                        className={`border-2 border-dashed border-white/10 hover:border-primary/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors aspect-square relative ${
+                          uploading
+                            ? "pointer-events-none bg-white/5"
+                            : "hover:bg-white/5"
+                        }`}
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, activeTab)}
+                          className="hidden"
+                        />
+                        {uploading ? (
+                          <>
+                            <span className="loading loading-spinner loading-md text-primary mb-2"></span>
+                            <span className="text-xs font-semibold text-primary">
+                              Mengunggah...
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <FiUploadCloud className="w-8 h-8 text-white/40 mb-2" />
+                            <span className="text-sm font-bold text-white/80">
+                              Unggah Gambar
+                            </span>
+                            <span className="text-[10px] text-white/40 mt-1">
+                              Maksimal 2 MB
+                            </span>
+                          </>
+                        )}
+                      </label>
+
+                      {/* Gallery Items */}
+                      {getCategoryImages(activeTab).map((src, index) => {
+                        const isPinned = isImagePinned(src, activeTab);
+                        const imagesList = getCategoryImages(activeTab);
+                        return (
+                          <div
+                            key={index}
+                            className="group relative border border-white/5 rounded-2xl overflow-hidden aspect-square bg-base-300 flex flex-col justify-end shadow-md transition-transform duration-300 hover:scale-[1.02]"
+                          >
+                            {/* Image preview */}
+                            <img
+                              src={src}
+                              alt="Gallery item"
+                              className="absolute inset-0 w-full h-full object-cover object-center z-0"
+                            />
+
+                            {/* Overlay Gradient on Hover */}
+                            <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20 opacity-90 group-hover:opacity-100 transition-opacity z-10 p-3 flex flex-col justify-between" />
+
+                            {/* Pinned Ribbon Badge (Apparel & Accessories only) */}
+                            {(activeTab === "apparel" ||
+                              activeTab === "accessories") &&
+                              isPinned && (
+                                <span className="absolute top-2 left-2 z-20 badge badge-primary text-[10px] uppercase font-bold py-2.5 rounded-lg select-none">
+                                  Home
+                                </span>
+                              )}
+
+                            {/* Action top right */}
+                            <button
+                              onClick={() => handleDeleteImage(src, activeTab)}
+                              className="absolute top-2 right-2 z-20 btn btn-circle btn-sm bg-red-950/70 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white"
+                              title="Hapus gambar"
+                            >
+                              <FiTrash2 className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Controls Footer Overlay */}
+                            <div className="relative z-20 p-2 sm:p-3 space-y-2 select-none">
+                              {/* Pin Toggle checkbox (for Apparel & Accessories) */}
+                              {(activeTab === "apparel" ||
+                                activeTab === "accessories") && (
+                                <button
+                                  onClick={() =>
+                                    handlePinToggle(src, activeTab)
+                                  }
+                                  className={`w-full text-xs font-semibold py-1.5 rounded-lg border transition-all cursor-pointer ${
+                                    isPinned
+                                      ? "bg-primary border-primary text-white"
+                                      : "bg-black/40 border-white/10 text-white/60 hover:border-white/20 hover:text-white"
+                                  }`}
+                                >
+                                  {isPinned ? "unpin" : "pin to home"}
+                                </button>
+                              )}
+
+                              {/* Navigation order triggers */}
+                              <div className="flex justify-between items-center gap-1.5">
+                                <button
+                                  onClick={() =>
+                                    moveImage(
+                                      imagesList,
+                                      getImageSetter(activeTab),
+                                      index,
+                                      "left",
+                                    )
+                                  }
+                                  disabled={index === 0}
+                                  className="btn btn-square btn-xs bg-black/60 border border-white/10 text-white disabled:opacity-30 disabled:pointer-events-none hover:bg-white/10"
+                                  title="Geser Kiri"
+                                >
+                                  <FiArrowLeft className="w-3 h-3" />
+                                </button>
+                                <span className="text-[10px] text-white/50 font-bold uppercase tracking-widest">
+                                  Pos: {index + 1}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    moveImage(
+                                      imagesList,
+                                      getImageSetter(activeTab),
+                                      index,
+                                      "right",
+                                    )
+                                  }
+                                  disabled={index === imagesList.length - 1}
+                                  className="btn btn-square btn-xs bg-black/60 border border-white/10 text-white disabled:opacity-30 disabled:pointer-events-none hover:bg-white/10"
+                                  title="Geser Kanan"
+                                >
+                                  <FiArrowRight className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* VIDEO MARKETING CATEGORY EDITOR */}
               {activeTab === "videos" && (
@@ -768,35 +1131,40 @@ export default function AdminPage() {
                       Video Marketing Manager
                     </h2>
                     <p className="text-xs text-white/50 font-light mt-1">
-                      Tambahkan link embed Youtube baru, ubah kategori video, atau reorder urutan video slider publik.
+                      Tambahkan link embed Youtube baru, ubah kategori video,
+                      atau reorder urutan video slider publik.
                     </p>
                   </div>
 
                   {/* Add New Video Form */}
-                  <form 
+                  <form
                     onSubmit={handleAddVideo}
                     className="bg-white/5 border border-white/5 rounded-2xl p-5 sm:p-6 space-y-4 shadow-inner"
                   >
                     <h3 className="text-sm font-bold uppercase tracking-wide text-primary flex items-center gap-2">
                       <FiPlus /> Tambah Video YouTube Baru
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-white/50">Judul Video</label>
-                        <input 
-                          type="text" 
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          Judul Video
+                        </label>
+                        <input
+                          type="text"
                           placeholder="Contoh: AI Product Promo Showcase"
                           value={newVideoTitle}
                           onChange={(e) => setNewVideoTitle(e.target.value)}
                           className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                         />
                       </div>
-                      
+
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-white/50">URL Embed YouTube</label>
-                        <input 
-                          type="text" 
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          URL Embed YouTube
+                        </label>
+                        <input
+                          type="text"
                           placeholder="https://www.youtube.com/embed/g2zP3ajD6o4?autoplay=0"
                           value={newVideoUrl}
                           onChange={(e) => setNewVideoUrl(e.target.value)}
@@ -807,8 +1175,10 @@ export default function AdminPage() {
 
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-end gap-4">
                       <div className="space-y-1 min-w-50">
-                        <label className="text-[10px] uppercase font-bold text-white/50">Kategori Video</label>
-                        <select 
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          Kategori Video
+                        </label>
+                        <select
                           value={newVideoCategory}
                           onChange={(e) => setNewVideoCategory(e.target.value)}
                           className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-2 text-sm text-white select"
@@ -819,12 +1189,16 @@ export default function AdminPage() {
                         </select>
                       </div>
 
-                      <button 
+                      <button
                         type="submit"
                         disabled={savingData}
                         className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
                       >
-                        {savingData ? <span className="loading loading-spinner loading-sm"></span> : <FiPlus className="w-4.5 h-4.5" />}
+                        {savingData ? (
+                          <span className="loading loading-spinner loading-sm"></span>
+                        ) : (
+                          <FiPlus className="w-4.5 h-4.5" />
+                        )}
                         Tambah Video
                       </button>
                     </div>
@@ -843,23 +1217,34 @@ export default function AdminPage() {
                     ) : (
                       <div className="space-y-3">
                         {videos.map((vid, idx) => (
-                          <div 
+                          <div
                             key={vid.id}
                             className="bg-base-300/40 border border-white/5 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all duration-300 hover:border-white/10 hover:bg-base-300/60"
                           >
                             <div className="space-y-1 grow">
                               <div className="flex items-center gap-2">
-                                <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase ${
-                                  vid.category === "ai-marketing" ? "bg-blue-900/50 text-blue-300" :
-                                  vid.category === "video-motion" ? "bg-purple-900/50 text-purple-300" :
-                                  "bg-indigo-900/50 text-indigo-300"
-                                }`}>
-                                  {vid.category === "ai-marketing" ? "AI Marketing" :
-                                   vid.category === "video-motion" ? "Video Motion" : "Video Editing"}
+                                <span
+                                  className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase ${
+                                    vid.category === "ai-marketing"
+                                      ? "bg-blue-900/50 text-blue-300"
+                                      : vid.category === "video-motion"
+                                        ? "bg-purple-900/50 text-purple-300"
+                                        : "bg-indigo-900/50 text-indigo-300"
+                                  }`}
+                                >
+                                  {vid.category === "ai-marketing"
+                                    ? "AI Marketing"
+                                    : vid.category === "video-motion"
+                                      ? "Video Motion"
+                                      : "Video Editing"}
                                 </span>
                               </div>
-                              <h4 className="text-base font-semibold text-white">{vid.title}</h4>
-                              <p className="text-xs text-white/40 truncate max-w-lg font-mono">{vid.embedUrl}</p>
+                              <h4 className="text-base font-semibold text-white">
+                                {vid.title}
+                              </h4>
+                              <p className="text-xs text-white/40 truncate max-w-lg font-mono">
+                                {vid.embedUrl}
+                              </p>
                             </div>
 
                             {/* Actions / Order Controls */}
@@ -908,49 +1293,77 @@ export default function AdminPage() {
                         Homepage Copywriting Manager
                       </h2>
                       <p className="text-xs text-white/50 font-light mt-1">
-                        Kelola konten teks dinamis halaman Beranda dari Hero, Who We Are, hingga Services Slider.
+                        Kelola konten teks dinamis halaman Beranda dari Hero,
+                        Who We Are, hingga Services Slider.
                       </p>
                     </div>
-                    <button 
+                    <button
                       onClick={saveTypewritingChanges}
                       disabled={savingData}
                       className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
                     >
-                      {savingData ? <span className="loading loading-spinner loading-sm"></span> : <FiSave className="w-4 h-4" />}
+                      {savingData ? (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      ) : (
+                        <FiSave className="w-4 h-4" />
+                      )}
                       Simpan Konten Teks
                     </button>
                   </div>
 
                   {/* HERO SECTION CONFIG */}
                   <div className="border border-white/5 bg-white/[0.02] rounded-3xl p-6 space-y-6">
-                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">1. Hero Section</h3>
-                    
+                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">
+                      1. Hero Section
+                    </h3>
+
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-white/50">Top Badge Text</label>
-                      <input 
+                      <label className="text-[10px] uppercase font-bold text-white/50">
+                        Top Badge Text
+                      </label>
+                      <input
                         type="text"
                         value={copywriting.hero?.badge || ""}
-                        onChange={(e) => setCopywriting((prev: any) => ({ ...prev, hero: { ...prev.hero, badge: e.target.value } }))}
+                        onChange={(e) =>
+                          setCopywriting((prev: any) => ({
+                            ...prev,
+                            hero: { ...prev.hero, badge: e.target.value },
+                          }))
+                        }
                         className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                       />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-white/50">Main Title (Gunakan \n untuk baris baru)</label>
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          Main Title (Gunakan \n untuk baris baru)
+                        </label>
                         <textarea
                           rows={2}
                           value={copywriting.hero?.title || ""}
-                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, hero: { ...prev.hero, title: e.target.value } }))}
+                          onChange={(e) =>
+                            setCopywriting((prev: any) => ({
+                              ...prev,
+                              hero: { ...prev.hero, title: e.target.value },
+                            }))
+                          }
                           className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2 text-sm text-white"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-white/50">Tagline / Subtitle</label>
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          Tagline / Subtitle
+                        </label>
                         <textarea
                           rows={2}
                           value={copywriting.hero?.subtitle || ""}
-                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, hero: { ...prev.hero, subtitle: e.target.value } }))}
+                          onChange={(e) =>
+                            setCopywriting((prev: any) => ({
+                              ...prev,
+                              hero: { ...prev.hero, subtitle: e.target.value },
+                            }))
+                          }
                           className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2 text-sm text-white"
                         />
                       </div>
@@ -960,30 +1373,52 @@ export default function AdminPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Stat 1 */}
                       <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                        <h4 className="text-xs uppercase font-bold text-primary">Stat 1</h4>
+                        <h4 className="text-xs uppercase font-bold text-primary">
+                          Stat 1
+                        </h4>
                         <div className="space-y-1">
-                          <label className="text-[10px] uppercase font-bold text-white/50">Value</label>
-                          <input 
+                          <label className="text-[10px] uppercase font-bold text-white/50">
+                            Value
+                          </label>
+                          <input
                             type="text"
                             value={copywriting.hero?.stats?.[0]?.value || ""}
-                            onChange={(e) => setCopywriting((prev: any) => {
-                              const stats = [...(prev.hero?.stats || [])];
-                              stats[0] = { ...(stats[0] || {}), value: e.target.value };
-                              return { ...prev, hero: { ...prev.hero, stats } };
-                            })}
+                            onChange={(e) =>
+                              setCopywriting((prev: any) => {
+                                const stats = [...(prev.hero?.stats || [])];
+                                stats[0] = {
+                                  ...(stats[0] || {}),
+                                  value: e.target.value,
+                                };
+                                return {
+                                  ...prev,
+                                  hero: { ...prev.hero, stats },
+                                };
+                              })
+                            }
                             className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] uppercase font-bold text-white/50">Label</label>
-                          <input 
+                          <label className="text-[10px] uppercase font-bold text-white/50">
+                            Label
+                          </label>
+                          <input
                             type="text"
                             value={copywriting.hero?.stats?.[0]?.label || ""}
-                            onChange={(e) => setCopywriting((prev: any) => {
-                              const stats = [...(prev.hero?.stats || [])];
-                              stats[0] = { ...(stats[0] || {}), label: e.target.value };
-                              return { ...prev, hero: { ...prev.hero, stats } };
-                            })}
+                            onChange={(e) =>
+                              setCopywriting((prev: any) => {
+                                const stats = [...(prev.hero?.stats || [])];
+                                stats[0] = {
+                                  ...(stats[0] || {}),
+                                  label: e.target.value,
+                                };
+                                return {
+                                  ...prev,
+                                  hero: { ...prev.hero, stats },
+                                };
+                              })
+                            }
                             className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
                           />
                         </div>
@@ -991,30 +1426,52 @@ export default function AdminPage() {
 
                       {/* Stat 2 */}
                       <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                        <h4 className="text-xs uppercase font-bold text-primary">Stat 2</h4>
+                        <h4 className="text-xs uppercase font-bold text-primary">
+                          Stat 2
+                        </h4>
                         <div className="space-y-1">
-                          <label className="text-[10px] uppercase font-bold text-white/50">Value</label>
-                          <input 
+                          <label className="text-[10px] uppercase font-bold text-white/50">
+                            Value
+                          </label>
+                          <input
                             type="text"
                             value={copywriting.hero?.stats?.[1]?.value || ""}
-                            onChange={(e) => setCopywriting((prev: any) => {
-                              const stats = [...(prev.hero?.stats || [])];
-                              stats[1] = { ...(stats[1] || {}), value: e.target.value };
-                              return { ...prev, hero: { ...prev.hero, stats } };
-                            })}
+                            onChange={(e) =>
+                              setCopywriting((prev: any) => {
+                                const stats = [...(prev.hero?.stats || [])];
+                                stats[1] = {
+                                  ...(stats[1] || {}),
+                                  value: e.target.value,
+                                };
+                                return {
+                                  ...prev,
+                                  hero: { ...prev.hero, stats },
+                                };
+                              })
+                            }
                             className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] uppercase font-bold text-white/50">Label</label>
-                          <input 
+                          <label className="text-[10px] uppercase font-bold text-white/50">
+                            Label
+                          </label>
+                          <input
                             type="text"
                             value={copywriting.hero?.stats?.[1]?.label || ""}
-                            onChange={(e) => setCopywriting((prev: any) => {
-                              const stats = [...(prev.hero?.stats || [])];
-                              stats[1] = { ...(stats[1] || {}), label: e.target.value };
-                              return { ...prev, hero: { ...prev.hero, stats } };
-                            })}
+                            onChange={(e) =>
+                              setCopywriting((prev: any) => {
+                                const stats = [...(prev.hero?.stats || [])];
+                                stats[1] = {
+                                  ...(stats[1] || {}),
+                                  label: e.target.value,
+                                };
+                                return {
+                                  ...prev,
+                                  hero: { ...prev.hero, stats },
+                                };
+                              })
+                            }
                             className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
                           />
                         </div>
@@ -1023,13 +1480,17 @@ export default function AdminPage() {
 
                     {/* Word list animation */}
                     <div className="space-y-4 pt-4 border-t border-white/5">
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-white/60">Typewriter Animation Words</h4>
-                      
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-white/60">
+                        Typewriter Animation Words
+                      </h4>
+
                       <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex gap-4 items-end">
                         <div className="space-y-1 grow">
-                          <label className="text-[10px] uppercase font-bold text-white/50">Tambah Kata Baru</label>
-                          <input 
-                            type="text" 
+                          <label className="text-[10px] uppercase font-bold text-white/50">
+                            Tambah Kata Baru
+                          </label>
+                          <input
+                            type="text"
                             placeholder="Contoh: identity"
                             value={newWord}
                             onChange={(e) => setNewWord(e.target.value)}
@@ -1046,70 +1507,102 @@ export default function AdminPage() {
                       </div>
 
                       <div className="space-y-2">
-                        {(copywriting.hero?.words || []).map((word: string, idx: number) => (
-                          <div 
-                            key={idx}
-                            className="bg-black/40 border border-white/5 rounded-xl px-4 py-2 flex justify-between items-center text-sm"
-                          >
-                            <span className="font-semibold text-white">{word}</span>
-                            <div className="flex items-center gap-2">
-                              <button
-                                type="button"
-                                onClick={() => moveHeroWord(idx, "up")}
-                                disabled={idx === 0}
-                                className="btn btn-square btn-xs bg-black/40 border border-white/10 text-white disabled:opacity-20"
-                              >
-                                <FiArrowUp className="w-3 h-3" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => moveHeroWord(idx, "down")}
-                                disabled={idx === (copywriting.hero?.words || []).length - 1}
-                                className="btn btn-square btn-xs bg-black/40 border border-white/10 text-white disabled:opacity-20"
-                              >
-                                <FiArrowDown className="w-3 h-3" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteHeroWord(idx)}
-                                className="btn btn-square btn-xs bg-red-950/70 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white"
-                              >
-                                <FiTrash2 className="w-3 h-3" />
-                              </button>
+                        {(copywriting.hero?.words || []).map(
+                          (word: string, idx: number) => (
+                            <div
+                              key={idx}
+                              className="bg-black/40 border border-white/5 rounded-xl px-4 py-2 flex justify-between items-center text-sm"
+                            >
+                              <span className="font-semibold text-white">
+                                {word}
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => moveHeroWord(idx, "up")}
+                                  disabled={idx === 0}
+                                  className="btn btn-square btn-xs bg-black/40 border border-white/10 text-white disabled:opacity-20"
+                                >
+                                  <FiArrowUp className="w-3 h-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => moveHeroWord(idx, "down")}
+                                  disabled={
+                                    idx ===
+                                    (copywriting.hero?.words || []).length - 1
+                                  }
+                                  className="btn btn-square btn-xs bg-black/40 border border-white/10 text-white disabled:opacity-20"
+                                >
+                                  <FiArrowDown className="w-3 h-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteHeroWord(idx)}
+                                  className="btn btn-square btn-xs bg-red-950/70 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white"
+                                >
+                                  <FiTrash2 className="w-3 h-3" />
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ),
+                        )}
                       </div>
                     </div>
                   </div>
 
                   {/* WHO WE ARE SECTION CONFIG */}
                   <div className="border border-white/5 bg-white/[0.02] rounded-3xl p-6 space-y-4">
-                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">2. Who We Are Section</h3>
-                    
+                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">
+                      2. Who We Are Section
+                    </h3>
+
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-white/50">Section Title</label>
-                      <input 
+                      <label className="text-[10px] uppercase font-bold text-white/50">
+                        Section Title
+                      </label>
+                      <input
                         type="text"
                         value={copywriting.whoWeAre?.title || ""}
-                        onChange={(e) => setCopywriting((prev: any) => ({ ...prev, whoWeAre: { ...prev.whoWeAre, title: e.target.value } }))}
+                        onChange={(e) =>
+                          setCopywriting((prev: any) => ({
+                            ...prev,
+                            whoWeAre: {
+                              ...prev.whoWeAre,
+                              title: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                       />
                     </div>
 
                     <div className="space-y-4 pt-2">
-                      <h4 className="text-xs uppercase font-bold text-white/40">Paragraphs</h4>
+                      <h4 className="text-xs uppercase font-bold text-white/40">
+                        Paragraphs
+                      </h4>
                       {[0, 1, 2].map((idx) => (
                         <div key={idx} className="space-y-1">
-                          <label className="text-[10px] uppercase font-bold text-white/50">Paragraf {idx + 1}</label>
+                          <label className="text-[10px] uppercase font-bold text-white/50">
+                            Paragraf {idx + 1}
+                          </label>
                           <textarea
                             rows={3}
-                            value={copywriting.whoWeAre?.paragraphs?.[idx] || ""}
-                            onChange={(e) => setCopywriting((prev: any) => {
-                              const paragraphs = [...(prev.whoWeAre?.paragraphs || [])];
-                              paragraphs[idx] = e.target.value;
-                              return { ...prev, whoWeAre: { ...prev.whoWeAre, paragraphs } };
-                            })}
+                            value={
+                              copywriting.whoWeAre?.paragraphs?.[idx] || ""
+                            }
+                            onChange={(e) =>
+                              setCopywriting((prev: any) => {
+                                const paragraphs = [
+                                  ...(prev.whoWeAre?.paragraphs || []),
+                                ];
+                                paragraphs[idx] = e.target.value;
+                                return {
+                                  ...prev,
+                                  whoWeAre: { ...prev.whoWeAre, paragraphs },
+                                };
+                              })
+                            }
                             className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                           />
                         </div>
@@ -1119,24 +1612,46 @@ export default function AdminPage() {
 
                   {/* SERVICES SECTION CONFIG */}
                   <div className="border border-white/5 bg-white/[0.02] rounded-3xl p-6 space-y-6">
-                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">3. Services Slider Section</h3>
+                    <h3 className="text-lg font-syne font-bold uppercase text-white border-b border-white/5 pb-2">
+                      3. Services Slider Section
+                    </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-white/50">Section Title</label>
-                        <input 
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          Section Title
+                        </label>
+                        <input
                           type="text"
                           value={copywriting.services?.title || ""}
-                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, services: { ...prev.services, title: e.target.value } }))}
+                          onChange={(e) =>
+                            setCopywriting((prev: any) => ({
+                              ...prev,
+                              services: {
+                                ...prev.services,
+                                title: e.target.value,
+                              },
+                            }))
+                          }
                           className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-white/50">Section Subtitle</label>
-                        <input 
+                        <label className="text-[10px] uppercase font-bold text-white/50">
+                          Section Subtitle
+                        </label>
+                        <input
                           type="text"
                           value={copywriting.services?.subtitle || ""}
-                          onChange={(e) => setCopywriting((prev: any) => ({ ...prev, services: { ...prev.services, subtitle: e.target.value } }))}
+                          onChange={(e) =>
+                            setCopywriting((prev: any) => ({
+                              ...prev,
+                              services: {
+                                ...prev.services,
+                                subtitle: e.target.value,
+                              },
+                            }))
+                          }
                           className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                         />
                       </div>
@@ -1144,42 +1659,84 @@ export default function AdminPage() {
 
                     {/* Services Items Array */}
                     <div className="space-y-4 pt-2">
-                      <h4 className="text-xs uppercase font-bold text-white/40">Slider Cards Content</h4>
+                      <h4 className="text-xs uppercase font-bold text-white/40">
+                        Slider Cards Content
+                      </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(copywriting.services?.items || []).map((item: any, idx: number) => (
-                          <div key={idx} className="border border-white/5 bg-white/5 rounded-2xl p-4 space-y-3">
-                            <h5 className="text-[10px] uppercase font-bold text-primary">Card {idx + 1}: Default "{["Apparel Design", "Social Media Design", "Video Marketing", "Custom & Accessories", "Logo & Branding"][idx]}"</h5>
-                            <div className="space-y-1">
-                              <label className="text-[10px] uppercase font-bold text-white/30">Display Title</label>
-                              <input 
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => setCopywriting((prev: any) => {
-                                  const items = [...(prev.services?.items || [])];
-                                  items[idx] = { ...(items[idx] || {}), title: e.target.value };
-                                  return { ...prev, services: { ...prev.services, items } };
-                                })}
-                                className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
-                              />
+                        {(copywriting.services?.items || []).map(
+                          (item: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className="border border-white/5 bg-white/5 rounded-2xl p-4 space-y-3"
+                            >
+                              <h5 className="text-[10px] uppercase font-bold text-primary">
+                                Card {idx + 1}: Default "
+                                {
+                                  [
+                                    "Apparel Design",
+                                    "Social Media Design",
+                                    "Video Marketing",
+                                    "Custom & Accessories",
+                                    "Logo & Branding",
+                                  ][idx]
+                                }
+                                "
+                              </h5>
+                              <div className="space-y-1">
+                                <label className="text-[10px] uppercase font-bold text-white/30">
+                                  Display Title
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.title}
+                                  onChange={(e) =>
+                                    setCopywriting((prev: any) => {
+                                      const items = [
+                                        ...(prev.services?.items || []),
+                                      ];
+                                      items[idx] = {
+                                        ...(items[idx] || {}),
+                                        title: e.target.value,
+                                      };
+                                      return {
+                                        ...prev,
+                                        services: { ...prev.services, items },
+                                      };
+                                    })
+                                  }
+                                  className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[10px] uppercase font-bold text-white/30">
+                                  Display Description
+                                </label>
+                                <textarea
+                                  rows={2}
+                                  value={item.description}
+                                  onChange={(e) =>
+                                    setCopywriting((prev: any) => {
+                                      const items = [
+                                        ...(prev.services?.items || []),
+                                      ];
+                                      items[idx] = {
+                                        ...(items[idx] || {}),
+                                        description: e.target.value,
+                                      };
+                                      return {
+                                        ...prev,
+                                        services: { ...prev.services, items },
+                                      };
+                                    })
+                                  }
+                                  className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
+                                />
+                              </div>
                             </div>
-                            <div className="space-y-1">
-                              <label className="text-[10px] uppercase font-bold text-white/30">Display Description</label>
-                              <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => setCopywriting((prev: any) => {
-                                  const items = [...(prev.services?.items || [])];
-                                  items[idx] = { ...(items[idx] || {}), description: e.target.value };
-                                  return { ...prev, services: { ...prev.services, items } };
-                                })}
-                                className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-3 py-1.5 text-xs text-white"
-                              />
-                            </div>
-                          </div>
-                        ))}
+                          ),
+                        )}
                       </div>
                     </div>
-
                   </div>
                 </div>
               )}
@@ -1193,49 +1750,75 @@ export default function AdminPage() {
                         Media & Kontak Manager
                       </h2>
                       <p className="text-xs text-white/50 font-light mt-1">
-                        Kelola informasi kontak dan media sosial yang terintegrasi di seluruh halaman website.
+                        Kelola informasi kontak dan media sosial yang
+                        terintegrasi di seluruh halaman website.
                       </p>
                     </div>
-                    <button 
+                    <button
                       onClick={saveMediaChanges}
                       disabled={savingData}
                       className="btn btn-primary rounded-xl px-6 gap-2 cursor-pointer shadow-lg shadow-primary/20"
                     >
-                      {savingData ? <span className="loading loading-spinner loading-sm"></span> : <FiSave className="w-4 h-4" />}
+                      {savingData ? (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      ) : (
+                        <FiSave className="w-4 h-4" />
+                      )}
                       Simpan Kontak
                     </button>
                   </div>
 
                   <div className="bg-white/5 border border-white/5 rounded-2xl p-6 space-y-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-white/50">Nomor WhatsApp (Kode Negara, Tanpa Tanda +/spasi)</label>
-                      <input 
-                        type="text" 
+                      <label className="text-[10px] uppercase font-bold text-white/50">
+                        Nomor WhatsApp (Kode Negara, Tanpa Tanda +/spasi)
+                      </label>
+                      <input
+                        type="text"
                         placeholder="Contoh: 6285904430581"
                         value={mediaSettings.whatsapp}
-                        onChange={(e) => setMediaSettings(prev => ({ ...prev, whatsapp: e.target.value }))}
+                        onChange={(e) =>
+                          setMediaSettings((prev) => ({
+                            ...prev,
+                            whatsapp: e.target.value,
+                          }))
+                        }
                         className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-white/50">Username Instagram</label>
-                      <input 
-                        type="text" 
-                        placeholder="Contoh: tosart.std"
+                      <label className="text-[10px] uppercase font-bold text-white/50">
+                        Username Instagram
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: tosa.std"
                         value={mediaSettings.instagram}
-                        onChange={(e) => setMediaSettings(prev => ({ ...prev, instagram: e.target.value }))}
+                        onChange={(e) =>
+                          setMediaSettings((prev) => ({
+                            ...prev,
+                            instagram: e.target.value,
+                          }))
+                        }
                         className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-white/50">Email Studio</label>
-                      <input 
-                        type="email" 
-                        placeholder="Contoh: hello@tosart.studio"
+                      <label className="text-[10px] uppercase font-bold text-white/50">
+                        Email Studio
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="Contoh: tosart.std@gmail.com"
                         value={mediaSettings.email}
-                        onChange={(e) => setMediaSettings(prev => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) =>
+                          setMediaSettings((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
                         className="w-full bg-white/5 border border-white/10 focus:border-primary focus:outline-none rounded-xl px-4 py-2.5 text-sm text-white"
                       />
                     </div>
@@ -1244,7 +1827,6 @@ export default function AdminPage() {
               )}
             </>
           )}
-
         </div>
       </div>
     </div>
@@ -1264,8 +1846,8 @@ function TabButton({ active, icon, label, onClick }: TabButtonProps) {
     <button
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
-        active 
-          ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.01]" 
+        active
+          ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.01]"
           : "text-white/60 hover:text-white hover:bg-white/5"
       }`}
     >
@@ -1280,4 +1862,66 @@ function LockIcon({ className = "" }) {
   return <FiLock className={className} />;
 }
 
+// Dropdown Header Component
+interface DropdownHeaderProps {
+  label: string;
+  icon: React.ReactNode;
+  isOpen: boolean;
+  onToggle: () => void;
+  isActive: boolean;
+}
 
+function DropdownHeader({
+  label,
+  icon,
+  isOpen,
+  onToggle,
+  isActive,
+}: DropdownHeaderProps) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+        isActive
+          ? "text-primary bg-white/[0.03]"
+          : "text-white/60 hover:text-white hover:bg-white/5"
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate">{label}</span>
+      </div>
+      <span className="shrink-0 text-white/40">
+        {isOpen ? (
+          <FiChevronDown className="w-4 h-4" />
+        ) : (
+          <FiChevronRight className="w-4 h-4" />
+        )}
+      </span>
+    </button>
+  );
+}
+
+// Nested Sub-Tab Button Component
+interface SubTabButtonProps {
+  active: boolean;
+  label: string;
+  onClick: () => void;
+}
+
+function SubTabButton({ active, label, onClick }: SubTabButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full flex items-center px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer ${
+        active
+          ? "bg-primary/20 text-primary border border-primary/20 scale-[1.01]"
+          : "text-white/50 hover:text-white hover:bg-white/5 border border-transparent"
+      }`}
+    >
+      <span className="truncate">{label}</span>
+    </button>
+  );
+}

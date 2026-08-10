@@ -1,4 +1,4 @@
-import ProductGallery from "@/components/ProductGallery";
+import SocialMediaDesignClient from "./SocialMediaDesignClient";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 import { getGalleryData } from "@/app/actions/cms";
@@ -12,6 +12,11 @@ export const metadata = {
 export default async function SocialMediaDesignPage() {
   const data = await getGalleryData();
   const socialImages = data.socialImages || [];
+  const fashionImages = data.fashionImages || [];
+  const fbImages = data.fbImages || [];
+  const corporateImages = data.corporateImages || [];
+  const ecommerceImages = data.ecommerceImages || [];
+  const lifestyleImages = data.lifestyleImages || [];
 
   return (
     <div className="pt-32 pb-16">
@@ -31,19 +36,20 @@ export default async function SocialMediaDesignPage() {
             Social Media Design
           </h1>
           <p className="text-lg sm:text-xl text-base-content/70 font-light leading-relaxed">
-            Elevate your digital presence. We design custom layouts, templates,
-            and engaging visual systems tailored for brand storytelling on
-            social media.
+            We build and manage visual content systems that help brands stay
+            consistent, relevant, and engaging across social platforms.
           </p>
         </div>
       </div>
 
-      {/* Gallery */}
-      <ProductGallery
-        title="Featured Graphics"
-        images={socialImages}
-        isSubpage={true}
-        layout="masonry"
+      {/* Gallery with Tab Filter */}
+      <SocialMediaDesignClient
+        socialImages={socialImages}
+        fashionImages={fashionImages}
+        fbImages={fbImages}
+        corporateImages={corporateImages}
+        ecommerceImages={ecommerceImages}
+        lifestyleImages={lifestyleImages}
       />
     </div>
   );
