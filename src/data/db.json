@@ -164,16 +164,16 @@
       "category": "video-editing"
     },
     {
-      "id": "v6",
-      "title": "Commercial Advertising Post-Production",
-      "embedUrl": "https://www.youtube.com/embed/Pj15bX-dJiw?autoplay=0",
-      "category": "video-editing"
-    },
-    {
       "id": "v-1787477962981",
       "title": "AI ACTION VIDEO | CAMERAMAN HERO",
       "embedUrl": "https://youtu.be/SOisND_AQPk",
       "category": "ai-marketing"
+    },
+    {
+      "id": "v6",
+      "title": "Commercial Advertising Post-Production",
+      "embedUrl": "https://www.youtube.com/embed/Pj15bX-dJiw?autoplay=0",
+      "category": "video-editing"
     }
   ],
   "typewriting": {
