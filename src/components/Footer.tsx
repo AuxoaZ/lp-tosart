@@ -124,7 +124,15 @@ export default function Footer({
       <div className="max-w-7xl mx-auto pt-8 border-t border-white/10 text-center text-xs text-base-content/40 flex flex-col md:flex-row justify-between items-center gap-4">
         <p>
           &copy; {new Date().getFullYear()} Tosart Creative Studio. All rights
-          reserved.
+          reserved. In collaboration with{" "}
+          <a
+            href="https://autoneka.id/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors"
+          >
+            autoneka.id
+          </a>
         </p>
         <div className="flex gap-4">
           <a href="#" className="hover:text-white">
