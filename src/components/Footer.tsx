@@ -9,7 +9,7 @@ export default function Footer({
 }) {
   const emailAddress = media?.email || "tosart.std@gmail.com";
   const whatsappNumber = media?.whatsapp || "6285904430581";
-  const instagramUsername = media?.instagram || "tosart.std";
+  const instagramUsername = "tosart.std";
 
   const whatsappNumberDisplay = "+62 85904430581";
 
