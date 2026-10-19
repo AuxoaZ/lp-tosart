@@ -3,8 +3,12 @@
 import Script from "next/script";
 import { FiInstagram } from "react-icons/fi";
 
-export default function InstagramFeed({ media }: { media?: { whatsapp: string; instagram: string; email: string; } }) {
-  const instagramHandle = media?.instagram || "tosart.std";
+export default function InstagramFeed({
+  media,
+}: {
+  media?: { whatsapp: string; instagram: string; email: string };
+}) {
+  const instagramHandle = "tosart.std";
 
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-fade-in-up">
@@ -18,8 +22,7 @@ export default function InstagramFeed({ media }: { media?: { whatsapp: string; i
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-primary hover:text-primary-focus transition-colors font-medium text-lg"
         >
-          <FiInstagram className="w-5 h-5" />
-          @{instagramHandle}
+          <FiInstagram className="w-5 h-5" />@{instagramHandle}
         </a>
       </div>
 
@@ -27,7 +30,8 @@ export default function InstagramFeed({ media }: { media?: { whatsapp: string; i
       <div className="w-full rounded-3xl overflow-hidden border border-white/10 bg-base-300/30 p-2 sm:p-6 backdrop-blur-sm">
         <div
           dangerouslySetInnerHTML={{
-            __html: '<behold-widget feed-id="nvNtKZGECvTafiEtQJ5C"></behold-widget>',
+            __html:
+              '<behold-widget feed-id="nvNtKZGECvTafiEtQJ5C"></behold-widget>',
           }}
         />
       </div>
