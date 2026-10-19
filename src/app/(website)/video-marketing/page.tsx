@@ -2,11 +2,9 @@ import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 import VideoMarketingClient from "./VideoMarketingClient";
 import { getGalleryData } from "@/app/actions/cms";
+import { videoMarketingMetadata } from "@/app/metadata";
 
-export const metadata = {
-  title: "Video Marketing | Tosart Studio",
-  description: "Dynamic video marketing assets. Watch our featured showcase displaying creative visual editing, motion graphics, and engaging brand promotions.",
-};
+export const metadata = videoMarketingMetadata;
 
 export default async function VideoMarketingPage() {
   const data = await getGalleryData();

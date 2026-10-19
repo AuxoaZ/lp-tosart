@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import SchemaMarkup from "@/components/SchemaMarkup";
 
 const syne = Syne({
   variable: "--font-syne",
@@ -13,6 +14,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tosart.com"),
   title: "Tosart | Apparel Design & Branding Studio",
   description: "Tosart is a creative studio specializing in apparel design, branding, and visual content production.",
 };
@@ -25,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" className="scroll-smooth">
       <body className={`${syne.variable} ${jakarta.variable} font-jakarta antialiased min-h-screen bg-black text-base-content overflow-x-hidden`}>
+        <SchemaMarkup />
         {/* Fixed Background Image for entire site */}
         <div 
           className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50"

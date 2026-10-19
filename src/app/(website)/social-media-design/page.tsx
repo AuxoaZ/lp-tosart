@@ -2,12 +2,9 @@ import SocialMediaDesignClient from "./SocialMediaDesignClient";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 import { getGalleryData } from "@/app/actions/cms";
+import { socialMediaDesignMetadata } from "@/app/metadata";
 
-export const metadata = {
-  title: "Social Media Design | Tosart Studio",
-  description:
-    "Elevate your digital presence. We design custom layouts, templates, and engaging visual systems tailored for brand storytelling on social media.",
-};
+export const metadata = socialMediaDesignMetadata;
 
 export default async function SocialMediaDesignPage() {
   const data = await getGalleryData();

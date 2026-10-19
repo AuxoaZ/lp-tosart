@@ -2,12 +2,9 @@ import ApparelDesignClient from "./ApparelDesignClient";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 import { getGalleryData } from "@/app/actions/cms";
+import { apparelDesignMetadata } from "@/app/metadata";
 
-export const metadata = {
-  title: "Apparel Design | Tosart Studio",
-  description:
-    "Our signature apparel design services. From custom hoodies and jerseys to varsity jackets, we create high-impact graphics and production-ready apparel concepts.",
-};
+export const metadata = apparelDesignMetadata;
 
 export default async function ApparelDesignPage() {
   const data = await getGalleryData();

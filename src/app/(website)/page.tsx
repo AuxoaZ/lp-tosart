@@ -6,6 +6,9 @@ import ProductGallery from "@/components/ProductGallery";
 import CreativeProcess from "@/components/CreativeProcess";
 import InstagramFeed from "@/components/InstagramFeed";
 import { getGalleryData } from "@/app/actions/cms";
+import { homepageMetadata } from "@/app/metadata";
+
+export const metadata = homepageMetadata;
 
 export default async function Home() {
   const data = await getGalleryData();
