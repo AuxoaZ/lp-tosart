@@ -17,6 +17,12 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://tosart.com"),
   title: "Tosart | Apparel Design & Branding Studio",
   description: "Tosart is a creative studio specializing in apparel design, branding, and visual content production.",
+  openGraph: {
+    images: ["/img/tosart-logo.png"],
+  },
+  twitter: {
+    images: ["/img/tosart-logo.png"],
+  },
 };
 
 export default function RootLayout({

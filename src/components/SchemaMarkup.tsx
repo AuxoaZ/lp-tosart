@@ -1,19 +1,20 @@
-// Schema Markup (JSON-LD) untuk Tosart Studio
+// Schema Markup (JSON-LD) for Tosart Studio
 
 const schemaData = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "ProfessionalService",
   "name": "Tosart Studio",
   "alternateName": "Tosart Creative Studio",
   "url": "https://tosart.com",
   "logo": "https://tosart.com/img/tosart-logo.png",
   "image": "https://tosart.com/img/tosart-logo.png",
-  "description": "Tosart Studio adalah creative studio profesional yang spesialis dalam desain apparel, branding, social media design, dan video marketing.",
+  "description":
+    "Tosart Studio is a creative design studio specializing in custom streetwear & apparel design, brand identity, and visual content production.",
   "telephone": "+6285904430581",
   "email": "tosart.std@gmail.com",
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "ID"
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": "Worldwide"
   },
   "openingHoursSpecification": {
     "@type": "OpeningHoursSpecification",
@@ -22,18 +23,19 @@ const schemaData = {
     "closes": "18:00"
   },
   "sameAs": [
-    "https://instagram.com/tosa.std"
+    "https://instagram.com/tosart.std"
   ],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "Layanan Tosart Studio",
+    "name": "Tosart Studio Creative Services",
     "itemListElement": [
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
           "name": "Apparel Design",
-          "description": "Desain kaos, hoodie, jersey, dan custom apparel dengan visual kuat dan output siap produksi"
+          "description":
+            "Custom t-shirt, hoodie, jersey, and streetwear design with production-ready graphics and tech specs."
         }
       },
       {
@@ -41,7 +43,8 @@ const schemaData = {
         "itemOffered": {
           "@type": "Service",
           "name": "Social Media Design",
-          "description": "Desain konten social media yang menarik dan konsisten untuk meningkatkan engagement brand"
+          "description":
+            "Engaging, cohesive social media content systems and visual templates designed for brand growth."
         }
       },
       {
@@ -49,15 +52,17 @@ const schemaData = {
         "itemOffered": {
           "@type": "Service",
           "name": "Video Marketing",
-          "description": "Produksi video marketing dan konten visual untuk brand"
+          "description":
+            "Dynamic motion graphics, promotional video editing, and visual storytelling for digital marketing."
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Branding",
-          "description": "Layanan branding lengkap termasuk logo, identitas visual, dan panduan brand"
+          "name": "Branding & Identity",
+          "description":
+            "Comprehensive brand identity design including logos, visual guidelines, and assets for modern brands."
         }
       }
     ]
